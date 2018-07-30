@@ -41,6 +41,14 @@ describe('transform', () => {
     const res = transform(stack, { a: { result: 'b' } }, { strict: true })
     should(res).eql({ a: { data: 'b', data2: null } })
   })
+  it('should work on a missing attribute with default', () => {
+    const stack = [
+      { to: 'a.data', from: 'a.result' },
+      { to: 'a.data2', from: 'a.missing', defaultValue: 'c' }
+    ]
+    const res = transform(stack, { a: { result: 'b' } })
+    should(res).eql({ a: { data: 'b', data2: 'c' } })
+  })
   it('should work with multiple stack items that override eachother', () => {
     const stack = [
       { to: 'b', from: 'a' },
@@ -69,5 +77,19 @@ describe('transform', () => {
     ]
     const res = transform(stack, { a: '123' }, { transforms })
     should(res).eql({ b: 122 })
+  })
+  it('should error with an invalid transform', (done) => {
+    const transforms = {
+      parseInt
+    }
+    const stack = [
+      { to: 'b', from: 'a', transforms: [ 'minusOne' ] }
+    ]
+    try {
+      transform(stack, { a: '123' }, { transforms })
+    } catch (err) {
+      should.exist(err)
+      done()
+    }
   })
 })

@@ -14,7 +14,7 @@ export const transform = (stack, inp, { strict, transforms }={}) => {
   if (inp == null || typeof inp !== 'object') return {} // short out on invalid input
 
   return stack.reduce((prev, op) => {
-    const v = dot.get(inp, op.from)
+    const v = dot.get(inp, op.from, op.defaultValue)
     // if strict, use null
     // otherwise use undefined
     const actual = typeof v === 'undefined'
