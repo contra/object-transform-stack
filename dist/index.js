@@ -23,11 +23,16 @@ const transform = exports.transform = (stack, inp, { strict, transforms } = {}) 
   if (inp == null || typeof inp !== 'object') return {}; // short out on invalid input
 
   return stack.reduce((prev, op) => {
-    const v = _dotProp2.default.get(inp, op.from, op.defaultValue);
-    // if strict, use null
-    // otherwise use undefined
-    const actual = typeof v === 'undefined' ? strict ? null : v : applyTransforms(op, v, transforms);
-    _dotProp2.default.set(prev, op.to, actual);
+    let v = _dotProp2.default.get(inp, op.from);
+    if (typeof op.defaultValue !== 'undefined') v = op.defaultValue;
+    if (typeof v === 'undefined') {
+      // if strict, use null
+      // otherwise use undefined
+      v = strict ? null : v;
+    } else {
+      v = applyTransforms(op, v, transforms);
+    }
+    _dotProp2.default.set(prev, op.to, v);
     return prev;
   }, {});
 };
