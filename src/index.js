@@ -1,5 +1,8 @@
 import dot from 'dot-prop'
 import forEach from 'lodash.foreach'
+import mergeWith from 'lodash.mergewith'
+import union from 'lodash.union'
+import flatten from 'lodash.flatten'
 import isObject from 'is-plain-object'
 import * as typeDefs from './types'
 
@@ -61,6 +64,21 @@ export const paths = (inp, { types=typeDefs }={}) => {
     prev.push({
       path,
       types: getTypes(v, types)
+    })
+    return prev
+  }, [])
+}
+
+export const pathsAggregate = (inp, { types=typeDefs }={}) => {
+  const merger = (nu, src) => [ nu, src ]
+  const all = mergeWith(...inp.map(getPaths), merger)
+  return Object.keys(all).reduce((prev, path) => {
+    const v = all[path]
+    prev.push({
+      path,
+      types: Array.isArray(v)
+        ? union(flatten(v.map((i) => getTypes(i, types)))) // unique array of types, path was in multiple
+        : getTypes(v, types) // unique array of types, path was only in one
     })
     return prev
   }, [])

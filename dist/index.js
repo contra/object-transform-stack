@@ -1,7 +1,7 @@
 'use strict';
 
 exports.__esModule = true;
-exports.paths = exports.transform = undefined;
+exports.pathsAggregate = exports.paths = exports.transform = undefined;
 
 var _dotProp = require('dot-prop');
 
@@ -10,6 +10,18 @@ var _dotProp2 = _interopRequireDefault(_dotProp);
 var _lodash = require('lodash.foreach');
 
 var _lodash2 = _interopRequireDefault(_lodash);
+
+var _lodash3 = require('lodash.mergewith');
+
+var _lodash4 = _interopRequireDefault(_lodash3);
+
+var _lodash5 = require('lodash.union');
+
+var _lodash6 = _interopRequireDefault(_lodash5);
+
+var _lodash7 = require('lodash.flatten');
+
+var _lodash8 = _interopRequireDefault(_lodash7);
 
 var _isPlainObject = require('is-plain-object');
 
@@ -80,6 +92,20 @@ const paths = exports.paths = (inp, { types = typeDefs } = {}) => {
     prev.push({
       path,
       types: getTypes(v, types)
+    });
+    return prev;
+  }, []);
+};
+
+const pathsAggregate = exports.pathsAggregate = (inp, { types = typeDefs } = {}) => {
+  const merger = (nu, src) => [nu, src];
+  const all = (0, _lodash4.default)(...inp.map(getPaths), merger);
+  return Object.keys(all).reduce((prev, path) => {
+    const v = all[path];
+    prev.push({
+      path,
+      types: Array.isArray(v) ? (0, _lodash6.default)((0, _lodash8.default)(v.map(i => getTypes(i, types)))) // unique array of types, path was in multiple
+      : getTypes(v, types) // unique array of types, path was only in one
     });
     return prev;
   }, []);

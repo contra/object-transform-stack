@@ -1,7 +1,7 @@
 /*eslint no-console: 0*/
 
 import should from 'should'
-import { transform, paths } from '../src'
+import { transform, paths, pathsAggregate } from '../src'
 
 describe('transform', () => {
   it('should work on a basic object', () => {
@@ -123,6 +123,24 @@ describe('paths', () => {
     should(res).eql([
       { path: 'a', types: [ 'object' ] },
       { path: 'a.b\\.c\\.d', types: [ 'string' ] }
+    ])
+  })
+})
+
+
+describe('pathsAggregate', () => {
+  it('should work on a nested object', () => {
+    const a = { a: { b: { c: 123, d: 'yo' } }, z: 'text', y: 'yo' }
+    const b = { a: { b: { c: 'yo', d: 123 } }, z: 123, x: 'yo' }
+    const res = pathsAggregate([ a, b ])
+    should(res).eql([
+      { path: 'a', types: [ 'object' ] },
+      { path: 'a.b', types: [ 'object' ] },
+      { path: 'a.b.c', types: [ 'number', 'date', 'string' ] },
+      { path: 'a.b.d', types: [ 'string', 'number', 'date' ] },
+      { path: 'z', types: [ 'string', 'number', 'date' ] },
+      { path: 'y', types: [ 'string' ] },
+      { path: 'x', types: [ 'string' ] }
     ])
   })
 })
