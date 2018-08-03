@@ -1,6 +1,7 @@
 /*eslint no-console: 0*/
 
 import should from 'should'
+import big from './big'
 import { transform, paths, pathsAggregate } from '../src'
 
 describe('transform', () => {
@@ -141,6 +142,17 @@ describe('pathsAggregate', () => {
       { path: 'z', types: [ 'string', 'number', 'date' ] },
       { path: 'y', types: [ 'string' ] },
       { path: 'x', types: [ 'string' ] }
+    ])
+  })
+  it('should work on a big object', () => {
+    const res = pathsAggregate(big)
+    should(res).eql([
+      { path: 'CALLTYPE', types: [ 'string' ] },
+      { path: 'INCIDENT_NO', types: [ 'number', 'string' ] },
+      { path: 'DATE', types: [ 'string', 'date' ] },
+      { path: 'LOCATION', types: [ 'string', 'date', 'number' ] },
+      { path: 'DISPO_CODE', types: [ 'number', 'string', 'date' ] },
+      { path: 'CALLTYPE_DESC', types: [ 'string' ] }
     ])
   })
 })

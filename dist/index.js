@@ -19,10 +19,6 @@ var _lodash5 = require('lodash.union');
 
 var _lodash6 = _interopRequireDefault(_lodash5);
 
-var _lodash7 = require('lodash.flatten');
-
-var _lodash8 = _interopRequireDefault(_lodash7);
-
 var _isPlainObject = require('is-plain-object');
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
@@ -98,15 +94,13 @@ const paths = exports.paths = (inp, { types = typeDefs } = {}) => {
 };
 
 const pathsAggregate = exports.pathsAggregate = (inp, { types = typeDefs } = {}) => {
-  const merger = (nu, src) => [nu, src];
+  const merger = (prev, src) => {
+    if (typeof prev === 'undefined') return getTypes(src, types);
+    return (0, _lodash6.default)(Array.isArray(prev) ? prev : getTypes(prev, types), Array.isArray(src) ? src : getTypes(src, types));
+  };
   const all = (0, _lodash4.default)(...inp.map(getPaths), merger);
-  return Object.keys(all).reduce((prev, path) => {
-    const v = all[path];
-    prev.push({
-      path,
-      types: Array.isArray(v) ? (0, _lodash6.default)((0, _lodash8.default)(v.map(i => getTypes(i, types)))) // unique array of types, path was in multiple
-      : getTypes(v, types) // unique array of types, path was only in one
-    });
-    return prev;
-  }, []);
+  return Object.keys(all).map(path => ({
+    path,
+    types: Array.isArray(all[path]) ? all[path] : getTypes(all[path], types) // mergeWith doesnt touch all keys, so pick up any stragglers here
+  }));
 };
