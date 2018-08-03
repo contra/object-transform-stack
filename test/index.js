@@ -1,7 +1,7 @@
 /*eslint no-console: 0*/
 
 import should from 'should'
-import { transform } from '../src'
+import { transform, paths } from '../src'
 
 describe('transform', () => {
   it('should work on a basic object', () => {
@@ -91,5 +91,38 @@ describe('transform', () => {
       should.exist(err)
       done()
     }
+  })
+})
+
+describe('paths', () => {
+  it('should work on a basic object', () => {
+    const res = paths({ a: 'b' })
+    should(res).eql([
+      { path: 'a', types: [ 'string' ] }
+    ])
+  })
+  it('should work with arrays', () => {
+    const res = paths({ a: [ 'b' ] })
+    should(res).eql([
+      { path: 'a', types: [ 'array' ] },
+      { path: 'a.0', types: [ 'string' ] }
+    ])
+  })
+  it('should work on a nested object', () => {
+    const res = paths({ a: { b: { c: 123, d: 'yo' } }, z: 'text' })
+    should(res).eql([
+      { path: 'a', types: [ 'object' ] },
+      { path: 'a.b', types: [ 'object' ] },
+      { path: 'a.b.c', types: [ 'number', 'date' ] },
+      { path: 'a.b.d', types: [ 'string' ] },
+      { path: 'z', types: [ 'string' ] }
+    ])
+  })
+  it('should work on a object with dot in the path', () => {
+    const res = paths({ a: { 'b.c.d': 'yo' } })
+    should(res).eql([
+      { path: 'a', types: [ 'object' ] },
+      { path: 'a.b\\.c\\.d', types: [ 'string' ] }
+    ])
   })
 })

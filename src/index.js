@@ -1,5 +1,9 @@
 import dot from 'dot-prop'
+import forEach from 'lodash.foreach'
+import isObject from 'is-plain-object'
+import * as typeDefs from './types'
 
+// transform stuff
 const applyTransforms = (op, v, transforms={}) => {
   if (!Array.isArray(op.transforms)) return v
   return op.transforms.reduce((prev, k) => {
@@ -26,4 +30,38 @@ export const transform = (stack, inp, { strict, transforms }={}) => {
     dot.set(prev, op.to, v)
     return prev
   }, {})
+}
+
+// path stuff
+const getPaths = (o) => {
+  const out = {}
+  const visit = (obj, keys=[]) => {
+    forEach(obj, (v, key) => {
+      keys.push(String(key).replace(/\./g, '\\.'))
+      out[keys.join('.')] = v
+      if (Array.isArray(v) || isObject(v)) visit(v, keys)
+      keys.pop()
+    })
+  }
+  visit(o)
+  return out
+}
+const getTypes = (v, types) =>
+  Object.keys(types).reduce((prev, type) => {
+    const fn = types[type]
+    if (typeof fn !== 'function') return prev
+    if (fn(v)) prev.push(type)
+    return prev
+  }, [])
+
+export const paths = (inp, { types=typeDefs }={}) => {
+  const paths = getPaths(inp)
+  return Object.keys(paths).reduce((prev, path) => {
+    const v = paths[path]
+    prev.push({
+      path,
+      types: getTypes(v, types)
+    })
+    return prev
+  }, [])
 }

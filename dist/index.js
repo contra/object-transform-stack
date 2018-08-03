@@ -1,14 +1,29 @@
 'use strict';
 
 exports.__esModule = true;
-exports.transform = undefined;
+exports.paths = exports.transform = undefined;
 
 var _dotProp = require('dot-prop');
 
 var _dotProp2 = _interopRequireDefault(_dotProp);
 
+var _lodash = require('lodash.foreach');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _isPlainObject = require('is-plain-object');
+
+var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
+
+var _types = require('./types');
+
+var typeDefs = _interopRequireWildcard(_types);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// transform stuff
 const applyTransforms = (op, v, transforms = {}) => {
   if (!Array.isArray(op.transforms)) return v;
   return op.transforms.reduce((prev, k) => {
@@ -35,4 +50,37 @@ const transform = exports.transform = (stack, inp, { strict, transforms } = {}) 
     _dotProp2.default.set(prev, op.to, v);
     return prev;
   }, {});
+};
+
+// path stuff
+const getPaths = o => {
+  const out = {};
+  const visit = (obj, keys = []) => {
+    (0, _lodash2.default)(obj, (v, key) => {
+      keys.push(String(key).replace(/\./g, '\\.'));
+      out[keys.join('.')] = v;
+      if (Array.isArray(v) || (0, _isPlainObject2.default)(v)) visit(v, keys);
+      keys.pop();
+    });
+  };
+  visit(o);
+  return out;
+};
+const getTypes = (v, types) => Object.keys(types).reduce((prev, type) => {
+  const fn = types[type];
+  if (typeof fn !== 'function') return prev;
+  if (fn(v)) prev.push(type);
+  return prev;
+}, []);
+
+const paths = exports.paths = (inp, { types = typeDefs } = {}) => {
+  const paths = getPaths(inp);
+  return Object.keys(paths).reduce((prev, path) => {
+    const v = paths[path];
+    prev.push({
+      path,
+      types: getTypes(v, types)
+    });
+    return prev;
+  }, []);
 };
