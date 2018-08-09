@@ -69,18 +69,18 @@ export const paths = (inp, { types=typeDefs }={}) => {
 }
 
 export const pathsAggregate = (inp, { types=typeDefs }={}) => {
-  const merger = (prev, src) => {
-    if (typeof prev === 'undefined') return getTypes(src, types)
-    return union(
-      Array.isArray(prev) ? prev : getTypes(prev, types),
-      Array.isArray(src) ? src : getTypes(src, types)
-    )
+  const getPathsAndTypes = (i) => {
+    const paths = getPaths(i)
+    return Object.keys(paths).reduce((prev, path) => {
+      const v = paths[path]
+      prev[path] = getTypes(v, types)
+      return prev
+    }, {})
   }
-  const all = mergeWith(...inp.map(getPaths), merger)
+  const merger = (prev, src) => union(prev, src)
+  const all = mergeWith(...inp.map(getPathsAndTypes), merger)
   return Object.keys(all).map((path) => ({
     path,
-    types: Array.isArray(all[path])
-      ? all[path]
-      : getTypes(all[path], types) // mergeWith doesnt touch all keys, so pick up any stragglers here
+    types: all[path]
   }))
 }

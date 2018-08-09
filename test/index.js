@@ -2,6 +2,9 @@
 
 import should from 'should'
 import big from './big'
+import uas from './uas'
+import uasExpected from './uas-expected'
+import featuresExpected from './uas-features-expected'
 import { transform, paths, pathsAggregate } from '../src'
 
 describe('transform', () => {
@@ -103,10 +106,11 @@ describe('paths', () => {
     ])
   })
   it('should work with arrays', () => {
-    const res = paths({ a: [ 'b' ] })
+    const res = paths({ a: [ 'b', 'c' ] })
     should(res).eql([
       { path: 'a', types: [ 'array' ] },
-      { path: 'a.0', types: [ 'string' ] }
+      { path: 'a.0', types: [ 'string' ] },
+      { path: 'a.1', types: [ 'string' ] }
     ])
   })
   it('should work on a nested object', () => {
@@ -125,6 +129,10 @@ describe('paths', () => {
       { path: 'a', types: [ 'object' ] },
       { path: 'a.b\\.c\\.d', types: [ 'string' ] }
     ])
+  })
+  it('should work on a root geo object', () => {
+    const res = paths(uas)
+    should(res).eql(uasExpected)
   })
 })
 
@@ -154,5 +162,9 @@ describe('pathsAggregate', () => {
       { path: 'DISPO_CODE', types: [ 'number', 'string', 'date' ] },
       { path: 'CALLTYPE_DESC', types: [ 'string' ] }
     ])
+  })
+  it('should work on geo object items', () => {
+    const res = pathsAggregate(uas.features)
+    should(res).eql(featuresExpected)
   })
 })

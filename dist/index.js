@@ -94,13 +94,18 @@ const paths = exports.paths = (inp, { types = typeDefs } = {}) => {
 };
 
 const pathsAggregate = exports.pathsAggregate = (inp, { types = typeDefs } = {}) => {
-  const merger = (prev, src) => {
-    if (typeof prev === 'undefined') return getTypes(src, types);
-    return (0, _lodash6.default)(Array.isArray(prev) ? prev : getTypes(prev, types), Array.isArray(src) ? src : getTypes(src, types));
+  const getPathsAndTypes = i => {
+    const paths = getPaths(i);
+    return Object.keys(paths).reduce((prev, path) => {
+      const v = paths[path];
+      prev[path] = getTypes(v, types);
+      return prev;
+    }, {});
   };
-  const all = (0, _lodash4.default)(...inp.map(getPaths), merger);
+  const merger = (prev, src) => (0, _lodash6.default)(prev, src);
+  const all = (0, _lodash4.default)(...inp.map(getPathsAndTypes), merger);
   return Object.keys(all).map(path => ({
     path,
-    types: Array.isArray(all[path]) ? all[path] : getTypes(all[path], types) // mergeWith doesnt touch all keys, so pick up any stragglers here
+    types: all[path]
   }));
 };
