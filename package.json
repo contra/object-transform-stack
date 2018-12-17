@@ -13,14 +13,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/contra/object-transform-stack.git"
+    "url": "git+https://github.com/staeco/object-transform-stack.git"
   },
   "author": "Contra <yo@contra.io> (http://contra.io)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/contra/object-transform-stack/issues"
+    "url": "https://github.com/staeco/object-transform-stack/issues"
   },
-  "homepage": "https://github.com/contra/object-transform-stack#readme",
+  "homepage": "https://github.com/staeco/object-transform-stack#readme",
   "files": [
     "dist"
   ],

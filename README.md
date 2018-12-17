@@ -44,5 +44,5 @@ Prints:
 [npm-url]: https://npmjs.org/package/object-transform-stack
 [npm-image]: http://img.shields.io/npm/v/object-transform-stack.svg
 
-[travis-url]: https://travis-ci.org/contra/object-transform-stack
-[travis-image]: https://travis-ci.org/contra/object-transform-stack.png?branch=master
+[travis-url]: https://travis-ci.org/staeco/object-transform-stack
+[travis-image]: https://travis-ci.org/staeco/object-transform-stack.png?branch=master
