@@ -8,6 +8,7 @@ const isValueObject = (v) =>
   isObject(v) && (v.field || v.transform)
 
 const validateArgumentTypes = (transform, sig, arg, types) => {
+  if (sig.types === 'any') return true // allows anything
   const argTypes = getTypes(arg, types)
   const typesValid = argTypes.some((t) => sig.types.includes(t))
   if (!typesValid) throw new Error(`Argument "${sig.name}" for "${transform.name}" must be of type: ${sig.types.join(', ')}, instead got ${argTypes.join(', ')}`)
@@ -37,6 +38,16 @@ const resolveTransform = (value, inp, opt) => {
         return
       }
       validateArgumentTypes(transform, sig, arg, opt.types)
+    })
+  }
+  if (transform.splat) {
+    const existingArgs = resolvedArgs.filter((v) => v != null)
+    // if number of required args not present, transform returns undefined
+    if (transform.splat.required > existingArgs.length) {
+      skip = true
+    }
+    value.arguments.forEach((arg) => {
+      validateArgumentTypes(transform, transform.splat, arg, opt.types)
     })
   }
   return skip ? undefined : transform.execute(...resolvedArgs)

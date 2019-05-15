@@ -2,38 +2,56 @@ import isObject from 'is-plain-object'
 import isNumber from 'is-number'
 
 export const number = {
-  check: (v) => isNumber(v),
-  ensure: (v) => parseFloat(v)
+  name: 'Number',
+  check: (v) => isNumber(v)
 }
 export const string = {
+  name: 'String',
   check: (v) => typeof v === 'string'
 }
 export const boolean = {
+  name: 'True/False',
   check: (v) => typeof v === 'boolean'
 }
 export const array = {
+  name: 'Array',
   check: (v) => Array.isArray(v)
 }
 export const object = {
+  name: 'Object',
   check: (v) => isObject(v)
 }
 export const date = {
-  check: (v) =>
-    v instanceof Date && !isNaN(v) || !isNaN(Date.parse(v)),
-  ensure: (v) => v instanceof Date ? v : new Date(Date.parse(v))
+  name: 'Date',
+  check: (v) => v instanceof Date && !isNaN(v) || !isNaN(Date.parse(v))
 }
 export const point = {
-  check: (v) => object.check(v) && v.type === 'Point'
+  name: 'GeoJSON Point',
+  check: (v) =>
+    object.check(v) && v.type === 'Point'
+      || v.type === 'Feature ' && v.geometry && v.geometry.type === 'Point'
 }
 export const polygon = {
-  check: (v) => object.check(v) && v.type === 'Polygon'
+  name: 'GeoJSON Polygon',
+  check: (v) =>
+    object.check(v) && v.type === 'Polygon'
+      || v.type === 'Feature ' && v.geometry && v.geometry.type === 'Polygon'
 }
 export const multipolygon = {
-  check: (v) => object.check(v) && v.type === 'MultiPolygon'
+  name: 'GeoJSON MultiPolygon',
+  check: (v) =>
+    object.check(v) && v.type === 'MultiPolygon'
+      || v.type === 'Feature ' && v.geometry && v.geometry.type === 'MultiPolygon'
 }
 export const linestring = {
-  check: (v) => object.check(v) && v.type === 'LineString'
+  name: 'GeoJSON LineString',
+  check: (v) =>
+    object.check(v) && v.type === 'LineString'
+      || v.type === 'Feature ' && v.geometry && v.geometry.type === 'LineString'
 }
 export const multilinestring = {
-  check: (v) => object.check(v) && v.type === 'MultiLineString'
+  name: 'GeoJSON MultiLineString',
+  check: (v) =>
+    object.check(v) && v.type === 'MultiLineString'
+      || v.type === 'Feature ' && v.geometry && v.geometry.type === 'MultiLineString'
 }

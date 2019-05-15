@@ -171,11 +171,20 @@
     }
   },
   "dependencies": {
+    "@sindresorhus/slugify": "^0.9.1",
+    "@turf/turf": "^5.1.6",
+    "aguid": "^2.0.0",
+    "capitalize": "^2.0.0",
+    "convert-units": "^2.3.4",
     "dot-prop": "^5.0.0",
     "is-number": "^7.0.0",
     "is-plain-object": "^3.0.0",
     "lodash.foreach": "^4.5.0",
+    "lodash.isequal": "^4.5.0",
     "lodash.mergewith": "^4.6.1",
-    "lodash.union": "^4.6.0"
+    "lodash.union": "^4.6.0",
+    "moment-timezone": "^0.5.25",
+    "numeral": "^2.0.6",
+    "phone": "^2.3.11"
   }
 }
