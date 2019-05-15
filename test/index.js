@@ -5,94 +5,212 @@ import big from './big'
 import uas from './uas'
 import uasExpected from './uas-expected'
 import featuresExpected from './uas-features-expected'
-import { transform, paths, pathsAggregate } from '../src'
+import { transform, paths, analyze } from '../src'
+
+const basicTransforms = {
+  uppercase: {
+    name: 'Uppercase',
+    signature: [
+      {
+        name: 'Text',
+        types: [ 'string' ],
+        required: true
+      }
+    ],
+    returns: 'string',
+    execute: (v) => v.toUpperCase()
+  },
+  lowercase: {
+    name: 'Lowercase',
+    signature: [
+      {
+        name: 'Text',
+        types: [ 'string' ],
+        required: true
+      }
+    ],
+    returns: 'string',
+    execute: (v) => v.toLowerCase()
+  },
+  trim: {
+    name: 'Trim',
+    signature: [
+      {
+        name: 'Text',
+        types: [ 'string' ],
+        required: true
+      }
+    ],
+    returns: 'string',
+    execute: (v) => v.trim()
+  },
+  add: {
+    name: 'Add',
+    signature: [
+      {
+        name: 'A',
+        types: [ 'number' ],
+        required: true
+      },
+      {
+        name: 'B',
+        types: [ 'number' ],
+        required: true
+      }
+    ],
+    returns: 'number',
+    execute: (a, b) => a + b
+  }
+}
 
 describe('transform', () => {
   it('should work on a basic object', () => {
     const stack = [
-      { to: 'b', from: 'a' }
+      { to: 'b', from: { field: 'a' } }
     ]
     const res = transform(stack, { a: 'b' })
     should(res).eql({ b: 'b' })
   })
   it('should work on a dot prop to', () => {
     const stack = [
-      { to: 'a.data', from: 'a' }
+      { to: 'a.data', from: { field: 'a' } }
     ]
     const res = transform(stack, { a: 'b' })
     should(res).eql({ a: { data: 'b' } })
   })
   it('should work on a dot prop from', () => {
     const stack = [
-      { to: 'a.data', from: 'a.result' }
+      { to: 'a.data', from: { field: 'a.result' } }
     ]
     const res = transform(stack, { a: { result: 'b' } })
     should(res).eql({ a: { data: 'b' } })
   })
   it('should work on a missing attribute', () => {
     const stack = [
-      { to: 'a.data', from: 'a.result' },
-      { to: 'a.data2', from: 'a.missing' }
+      { to: 'a.data', from: { field: 'a.result' } },
+      { to: 'a.data2', from: { field: 'a.missing' } }
     ]
     const res = transform(stack, { a: { result: 'b' } })
     should(res).eql({ a: { data: 'b', data2: undefined } })
   })
   it('should work on a missing attribute in strict mode', () => {
     const stack = [
-      { to: 'a.data', from: 'a.result' },
-      { to: 'a.data2', from: 'a.missing' }
+      { to: 'a.data', from: { field: 'a.result' } },
+      { to: 'a.data2', from: { field: 'a.missing' } }
     ]
     const res = transform(stack, { a: { result: 'b' } }, { strict: true })
     should(res).eql({ a: { data: 'b', data2: null } })
   })
   it('should work on a missing attribute with default', () => {
     const stack = [
-      { to: 'a.data', from: 'a.result' },
-      { to: 'a.data2', from: 'a.missing', defaultValue: 'c' }
+      { to: 'a.data', from: { field: 'a.result' } },
+      { to: 'a.data2', from: { field: 'a.missing', defaultValue: 'c' } }
     ]
     const res = transform(stack, { a: { result: 'b' } })
     should(res).eql({ a: { data: 'b', data2: 'c' } })
   })
   it('should work with multiple stack items that override eachother', () => {
     const stack = [
-      { to: 'b', from: 'a' },
-      { to: 'b', from: 'c' }
+      { to: 'b', from: { field: 'a' } },
+      { to: 'b', from: { field: 'c' } }
     ]
     const res = transform(stack, { a: 'b', c: 'c' })
     should(res).eql({ b: 'c' })
   })
-  it('should work with a transform', () => {
-    const transforms = {
-      parseInt
-    }
+  it('should work with a basic transform', () => {
     const stack = [
-      { to: 'b', from: 'a', transforms: [ 'parseInt' ] }
+      {
+        to: 'b',
+        from: {
+          transform: 'uppercase',
+          arguments: [ { field: 'a' } ]
+        }
+      }
     ]
-    const res = transform(stack, { a: '123' }, { transforms })
-    should(res).eql({ b: 123 })
+    const res = transform(stack, { a: 'abc' }, { transforms: basicTransforms })
+    should(res).eql({ b: 'ABC' })
   })
-  it('should work with mutiple transforms', () => {
-    const transforms = {
-      parseInt,
-      minusOne: (v) => v - 1
-    }
+  it('should work with a basic transform and defaultValue on field', () => {
     const stack = [
-      { to: 'b', from: 'a', transforms: [ 'parseInt', 'minusOne' ] }
+      {
+        to: 'b',
+        from: {
+          transform: 'uppercase',
+          arguments: [ { field: 'z', defaultValue: 'abc' } ]
+        }
+      }
     ]
-    const res = transform(stack, { a: '123' }, { transforms })
-    should(res).eql({ b: 122 })
+    const res = transform(stack, { a: 'abc' }, { transforms: basicTransforms })
+    should(res).eql({ b: 'ABC' })
   })
-  it('should error with an invalid transform', (done) => {
-    const transforms = {
-      parseInt
-    }
+  it('should work with a basic transform and defaultValue on transform', () => {
     const stack = [
-      { to: 'b', from: 'a', transforms: [ 'minusOne' ] }
+      {
+        to: 'b',
+        from: {
+          transform: 'uppercase',
+          defaultValue: 'XYZ',
+          arguments: [ { field: 'z' } ]
+        }
+      }
+    ]
+    const res = transform(stack, { a: 'abc' }, { transforms: basicTransforms })
+    should(res).eql({ b: 'XYZ' })
+  })
+  it('should work with nested transforms', () => {
+    const stack = [
+      {
+        to: 'b',
+        from: {
+          transform: 'uppercase',
+          arguments: [
+            {
+              transform: 'trim',
+              arguments: [ { field: 'a' } ]
+            }
+          ]
+        }
+      }
+    ]
+    const res = transform(stack, { a: '   abc   ' }, { transforms: basicTransforms })
+    should(res).eql({ b: 'ABC' })
+  })
+  it('should work with flat value transforms', () => {
+    const stack = [
+      {
+        to: 'b',
+        from: {
+          transform: 'add',
+          arguments: [
+            { field: 'a' },
+            123
+          ]
+        }
+      }
+    ]
+    const res = transform(stack, { a: 1 }, { transforms: basicTransforms })
+    should(res).eql({ b: 124 })
+  })
+  it('should error with invalid transform values', (done) => {
+    const stack = [
+      {
+        to: 'b',
+        from: {
+          transform: 'uppercase',
+          arguments: [
+            {
+              transform: 'trim',
+              arguments: [ { field: 'a' } ]
+            }
+          ]
+        }
+      }
     ]
     try {
-      transform(stack, { a: '123' }, { transforms })
+      transform(stack, { a: 123 }, { transforms: basicTransforms })
     } catch (err) {
       should.exist(err)
+      should(err.message).eql('Argument "Text" for "Trim" must be of type: string, instead got number, date')
       done()
     }
   })
@@ -137,11 +255,11 @@ describe('paths', () => {
 })
 
 
-describe('pathsAggregate', () => {
+describe('analyze', () => {
   it('should work on a nested object', () => {
     const a = { a: { b: { c: 123, d: 'yo' } }, z: 'text', y: 'yo' }
     const b = { a: { b: { c: 'yo', d: 123 } }, z: 123, x: 'yo' }
-    const res = pathsAggregate([ a, b ])
+    const res = analyze([ a, b ])
     should(res).eql([
       { path: 'a', types: [ 'object' ] },
       { path: 'a.b', types: [ 'object' ] },
@@ -153,7 +271,7 @@ describe('pathsAggregate', () => {
     ])
   })
   it('should work on a big object', () => {
-    const res = pathsAggregate(big)
+    const res = analyze(big)
     should(res).eql([
       { path: 'CALLTYPE', types: [ 'string' ] },
       { path: 'INCIDENT_NO', types: [ 'number', 'string' ] },
@@ -164,7 +282,7 @@ describe('pathsAggregate', () => {
     ])
   })
   it('should work on geo object items', () => {
-    const res = pathsAggregate(uas.features)
+    const res = analyze(uas.features)
     should(res).eql(featuresExpected)
   })
 })

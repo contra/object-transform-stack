@@ -13,12 +13,32 @@ npm install object-transform-stack --save
 import { transform } from 'object-transform-stack'
 
 const transforms = {
-  date: (v) => new Date(v)
+  trim: {
+    name: 'Trim',
+    signature: [
+      {
+        name: 'Text',
+        types: [ 'string' ],
+        required: true
+      }
+    ],
+    returns: 'string',
+    execute: (v) => v.trim()
+  }
 }
 
 const stack = [
-  { to: 'bday', from: 'birth', transforms: [ 'date' ] },
-  { to: 'name', from: 'name.legal' }
+  {
+    to: 'bday',
+    from: { field: 'birth' }
+  },
+  {
+    to: 'name',
+    from: {
+      transform: 'trim',
+      arguments: [ { field: 'name.legal' } ]
+    }
+  }
 ]
 
 const input = {
