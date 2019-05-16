@@ -246,7 +246,7 @@ describe('transform', () => {
       await transform(stack, { a: 123 }, { transforms: basicTransforms })
     } catch (err) {
       should.exist(err)
-      should(err.message).eql('Argument "Text" for "Trim" must be of type: string, instead got number, date')
+      should(err.message).eql('Argument "Text" for "Trim" must be of type: string, instead got date, number')
       return
     }
     throw new Error('Did not throw!')
@@ -273,7 +273,7 @@ describe('paths', () => {
     should(res).eql([
       { path: 'a', types: [ 'object' ] },
       { path: 'a.b', types: [ 'object' ] },
-      { path: 'a.b.c', types: [ 'number', 'date' ] },
+      { path: 'a.b.c', types: [ 'date', 'number' ] },
       { path: 'a.b.d', types: [ 'string' ] },
       { path: 'z', types: [ 'string' ] }
     ])
@@ -300,9 +300,9 @@ describe('analyze', () => {
     should(res).eql([
       { path: 'a', types: [ 'object' ] },
       { path: 'a.b', types: [ 'object' ] },
-      { path: 'a.b.c', types: [ 'number', 'date', 'string' ] },
-      { path: 'a.b.d', types: [ 'string', 'number', 'date' ] },
-      { path: 'z', types: [ 'string', 'number', 'date' ] },
+      { path: 'a.b.c', types: [ 'date', 'number', 'string' ] },
+      { path: 'a.b.d', types: [ 'date', 'number', 'string' ] },
+      { path: 'z', types: [ 'date', 'number', 'string' ] },
       { path: 'y', types: [ 'string' ] },
       { path: 'x', types: [ 'string' ] }
     ])
@@ -312,9 +312,9 @@ describe('analyze', () => {
     should(res).eql([
       { path: 'CALLTYPE', types: [ 'string' ] },
       { path: 'INCIDENT_NO', types: [ 'number', 'string' ] },
-      { path: 'DATE', types: [ 'string', 'date' ] },
-      { path: 'LOCATION', types: [ 'string', 'date', 'number' ] },
-      { path: 'DISPO_CODE', types: [ 'number', 'string', 'date' ] },
+      { path: 'DATE', types: [ 'date', 'string' ] },
+      { path: 'LOCATION', types: [ 'date', 'number', 'string' ] },
+      { path: 'DISPO_CODE', types: [ 'date', 'number', 'string' ] },
       { path: 'CALLTYPE_DESC', types: [ 'string' ] }
     ])
   })

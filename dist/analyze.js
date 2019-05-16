@@ -15,6 +15,10 @@ var _lodash5 = require('lodash.union');
 
 var _lodash6 = _interopRequireDefault(_lodash5);
 
+var _lodash7 = require('lodash.sortby');
+
+var _lodash8 = _interopRequireDefault(_lodash7);
+
 var _isPlainObject = require('is-plain-object');
 
 var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
@@ -68,6 +72,6 @@ const analyze = exports.analyze = (inp, { types = typeDefs } = {}) => {
   const all = (0, _lodash4.default)(...inp.map(getPathsAndTypes), merger);
   return Object.entries(all).map(([path, types]) => ({
     path,
-    types
+    types: (0, _lodash8.default)(types)
   }));
 };

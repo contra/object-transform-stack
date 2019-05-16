@@ -1,6 +1,7 @@
 import forEach from 'lodash.foreach'
 import mergeWith from 'lodash.mergewith'
 import union from 'lodash.union'
+import sort from 'lodash.sortby'
 import isObject from 'is-plain-object'
 import getTypes from './getTypes'
 import * as typeDefs from './presets/types'
@@ -42,6 +43,6 @@ export const analyze = (inp, { types=typeDefs }={}) => {
   const all = mergeWith(...inp.map(getPathsAndTypes), merger)
   return Object.entries(all).map(([ path, types ]) => ({
     path,
-    types
+    types: sort(types)
   }))
 }
