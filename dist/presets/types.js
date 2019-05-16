@@ -18,7 +18,7 @@ const number = exports.number = {
   check: v => (0, _isNumber2.default)(v)
 };
 const string = exports.string = {
-  name: 'String',
+  name: 'Text',
   check: v => typeof v === 'string'
 };
 const boolean = exports.boolean = {
@@ -26,15 +26,15 @@ const boolean = exports.boolean = {
   check: v => typeof v === 'boolean'
 };
 const array = exports.array = {
-  name: 'Array',
+  name: 'List',
   check: v => Array.isArray(v)
 };
 const object = exports.object = {
-  name: 'Object',
+  name: 'Map',
   check: v => (0, _isPlainObject2.default)(v)
 };
 const date = exports.date = {
-  name: 'Date',
+  name: 'Date/Time',
   check: v => v instanceof Date && !isNaN(v) || !isNaN(Date.parse(v))
 };
 const point = exports.point = {

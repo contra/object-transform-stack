@@ -6,7 +6,7 @@ export const number = {
   check: (v) => isNumber(v)
 }
 export const string = {
-  name: 'String',
+  name: 'Text',
   check: (v) => typeof v === 'string'
 }
 export const boolean = {
@@ -14,15 +14,15 @@ export const boolean = {
   check: (v) => typeof v === 'boolean'
 }
 export const array = {
-  name: 'Array',
+  name: 'List',
   check: (v) => Array.isArray(v)
 }
 export const object = {
-  name: 'Object',
+  name: 'Map',
   check: (v) => isObject(v)
 }
 export const date = {
-  name: 'Date',
+  name: 'Date/Time',
   check: (v) => v instanceof Date && !isNaN(v) || !isNaN(Date.parse(v))
 }
 export const point = {

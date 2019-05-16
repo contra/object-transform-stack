@@ -4,12 +4,15 @@ import slugify from '@sindresorhus/slugify'
 import caps from 'capitalize'
 import convertUnits from 'convert-units'
 import isEqual from 'lodash.isequal'
+import _flatten from 'lodash.flatten'
+import _concat from 'lodash.concat'
+import _compact from 'lodash.compact'
 import { simplify, truncate, cleanCoords } from '@turf/turf'
 
 // TODO:
 // tz, geo.locate, geo.search, geo.intersection, geo.snap, geo.navigate, geo.snap, geo.tz
 
-// string transforms
+// Strings
 export const normalize = {
   name: 'Normalize',
   notes: 'Removes excess whitespace and lowercases text',
@@ -78,35 +81,6 @@ export const capitalizeWords = {
   execute: (v) => caps.words(v)
 }
 
-export const convert = {
-  name: 'Convert',
-  notes: 'Converts one unit to another',
-  signature: [
-    {
-      name: 'Value',
-      types: [ 'number' ],
-      required: true
-    },
-    {
-      name: 'From Unit',
-      types: [ 'string' ],
-      required: true
-    },
-    {
-      name: 'To Unit',
-      types: [ 'string' ],
-      required: true
-    }
-  ],
-  returns: 'string',
-  execute: (v, from, to) => {
-    if (typeof v === 'string') v = parseFloat(v)
-    if (isNaN(v)) return
-    if (typeof v !== 'number') return
-    return convertUnits(v).from(from).to(to)
-  }
-}
-
 export const guid = {
   name: 'Unique ID',
   notes: 'Combines multiple semi-unique values into a Globally Unique ID (GUID)',
@@ -141,7 +115,118 @@ export const slug = {
   }
 }
 
-// geo transforms
+// Numbers
+export const convert = {
+  name: 'Convert',
+  notes: 'Converts one unit to another',
+  signature: [
+    {
+      name: 'Value',
+      types: [ 'number' ],
+      required: true
+    },
+    {
+      name: 'From Unit',
+      types: [ 'string' ],
+      required: true
+    },
+    {
+      name: 'To Unit',
+      types: [ 'string' ],
+      required: true
+    }
+  ],
+  returns: 'number',
+  execute: (v, from, to) => {
+    if (typeof v === 'string') v = parseFloat(v)
+    if (isNaN(v)) return
+    if (typeof v !== 'number') return
+    return convertUnits(v).from(from).to(to)
+  }
+}
+export const add = {
+  name: 'Add',
+  notes: 'Applies addition to multiple numbers',
+  splat: {
+    name: 'Value',
+    types: [ 'number' ],
+    required: 2
+  },
+  returns: 'number',
+  execute: (...a) =>
+    a.reduce((p, i) => p + i, 0)
+}
+export const subtract = {
+  name: 'Subtract',
+  notes: 'Applies subtraction to multiple numbers',
+  splat: {
+    name: 'Value',
+    types: [ 'number' ],
+    required: 2
+  },
+  returns: 'number',
+  execute: (...a) =>
+    a.reduce((p, i) => p - i, 0)
+}
+
+// Arrays
+export const compact = {
+  name: 'Compact',
+  notes: 'Removes all empty or false values from a list',
+  signature: [
+    {
+      name: 'Value',
+      types: [ 'array' ],
+      required: true
+    }
+  ],
+  returns: 'array',
+  execute: (v) => _compact(v)
+}
+export const flatten = {
+  name: 'Flatten',
+  notes: 'Removes a level of createLineString from a list',
+  signature: [
+    {
+      name: 'Value',
+      types: [ 'array' ],
+      required: true
+    }
+  ],
+  returns: 'array',
+  execute: (v) => _flatten(v)
+}
+export const concatenate = {
+  name: 'Concatenate',
+  notes: 'Merges multiple lists together',
+  splat: {
+    name: 'Value',
+    types: [ 'array' ],
+    required: 2
+  },
+  returns: 'array',
+  execute: (...v) => _concat(...v)
+}
+export const join = {
+  name: 'Join',
+  notes: 'Converts all elements in an array to a string joined by a separator',
+  signature: [
+    {
+      name: 'Value',
+      types: [ 'array' ],
+      required: true
+    },
+    {
+      name: 'Separator',
+      types: [ 'text' ]
+    }
+  ],
+  returns: 'array',
+  execute: (v, sep=', ') =>
+    v.join(sep)
+}
+
+// Geometries
 export const simplifyGeometry = {
   name: 'Simplify',
   notes: 'Removes excess precision and simplifies the shape of any geometry',

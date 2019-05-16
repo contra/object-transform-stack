@@ -1,7 +1,7 @@
 'use strict';
 
 exports.__esModule = true;
-exports.createLineString = exports.createPoint = exports.ensureMulti = exports.simplifyGeometry = exports.slug = exports.guid = exports.convert = exports.capitalizeWords = exports.capitalize = exports.phone = exports.normalize = undefined;
+exports.createLineString = exports.createPoint = exports.ensureMulti = exports.simplifyGeometry = exports.join = exports.concatenate = exports.flatten = exports.compact = exports.subtract = exports.add = exports.convert = exports.slug = exports.guid = exports.capitalizeWords = exports.capitalize = exports.phone = exports.normalize = undefined;
 
 var _phone = require('phone');
 
@@ -27,6 +27,18 @@ var _lodash = require('lodash.isequal');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _lodash3 = require('lodash.flatten');
+
+var _lodash4 = _interopRequireDefault(_lodash3);
+
+var _lodash5 = require('lodash.concat');
+
+var _lodash6 = _interopRequireDefault(_lodash5);
+
+var _lodash7 = require('lodash.compact');
+
+var _lodash8 = _interopRequireDefault(_lodash7);
+
 var _turf = require('@turf/turf');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -36,7 +48,7 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
 // TODO:
 // tz, geo.locate, geo.search, geo.intersection, geo.snap, geo.navigate, geo.snap, geo.tz
 
-// string transforms
+// Strings
 const normalize = exports.normalize = {
   name: 'Normalize',
   notes: 'Removes excess whitespace and lowercases text',
@@ -96,31 +108,6 @@ const capitalizeWords = exports.capitalizeWords = {
   execute: v => _capitalize2.default.words(v)
 };
 
-const convert = exports.convert = {
-  name: 'Convert',
-  notes: 'Converts one unit to another',
-  signature: [{
-    name: 'Value',
-    types: ['number'],
-    required: true
-  }, {
-    name: 'From Unit',
-    types: ['string'],
-    required: true
-  }, {
-    name: 'To Unit',
-    types: ['string'],
-    required: true
-  }],
-  returns: 'string',
-  execute: (v, from, to) => {
-    if (typeof v === 'string') v = parseFloat(v);
-    if (isNaN(v)) return;
-    if (typeof v !== 'number') return;
-    return (0, _convertUnits2.default)(v).from(from).to(to);
-  }
-};
-
 const guid = exports.guid = {
   name: 'Unique ID',
   notes: 'Combines multiple semi-unique values into a Globally Unique ID (GUID)',
@@ -152,7 +139,102 @@ const slug = exports.slug = {
     return (0, _slugify2.default)(args.join(' ')).toLowerCase();
   }
 
-  // geo transforms
+  // Numbers
+};const convert = exports.convert = {
+  name: 'Convert',
+  notes: 'Converts one unit to another',
+  signature: [{
+    name: 'Value',
+    types: ['number'],
+    required: true
+  }, {
+    name: 'From Unit',
+    types: ['string'],
+    required: true
+  }, {
+    name: 'To Unit',
+    types: ['string'],
+    required: true
+  }],
+  returns: 'number',
+  execute: (v, from, to) => {
+    if (typeof v === 'string') v = parseFloat(v);
+    if (isNaN(v)) return;
+    if (typeof v !== 'number') return;
+    return (0, _convertUnits2.default)(v).from(from).to(to);
+  }
+};
+const add = exports.add = {
+  name: 'Add',
+  notes: 'Applies addition to multiple numbers',
+  splat: {
+    name: 'Value',
+    types: ['number'],
+    required: 2
+  },
+  returns: 'number',
+  execute: (...a) => a.reduce((p, i) => p + i, 0)
+};
+const subtract = exports.subtract = {
+  name: 'Subtract',
+  notes: 'Applies subtraction to multiple numbers',
+  splat: {
+    name: 'Value',
+    types: ['number'],
+    required: 2
+  },
+  returns: 'number',
+  execute: (...a) => a.reduce((p, i) => p - i, 0)
+
+  // Arrays
+};const compact = exports.compact = {
+  name: 'Compact',
+  notes: 'Removes all empty or false values from a list',
+  signature: [{
+    name: 'Value',
+    types: ['array'],
+    required: true
+  }],
+  returns: 'array',
+  execute: v => (0, _lodash8.default)(v)
+};
+const flatten = exports.flatten = {
+  name: 'Flatten',
+  notes: 'Removes a level of createLineString from a list',
+  signature: [{
+    name: 'Value',
+    types: ['array'],
+    required: true
+  }],
+  returns: 'array',
+  execute: v => (0, _lodash4.default)(v)
+};
+const concatenate = exports.concatenate = {
+  name: 'Concatenate',
+  notes: 'Merges multiple lists together',
+  splat: {
+    name: 'Value',
+    types: ['array'],
+    required: 2
+  },
+  returns: 'array',
+  execute: (...v) => (0, _lodash6.default)(...v)
+};
+const join = exports.join = {
+  name: 'Join',
+  notes: 'Converts all elements in an array to a string joined by a separator',
+  signature: [{
+    name: 'Value',
+    types: ['array'],
+    required: true
+  }, {
+    name: 'Separator',
+    types: ['text']
+  }],
+  returns: 'array',
+  execute: (v, sep = ', ') => v.join(sep)
+
+  // Geometries
 };const simplifyGeometry = {
   name: 'Simplify',
   notes: 'Removes excess precision and simplifies the shape of any geometry',

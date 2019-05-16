@@ -1,6 +1,6 @@
 {
   "name": "object-transform-stack",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Simple module to map one object to another using a stack of declarative pointers and transforms",
   "main": "dist/index.js",
   "keywords": [
@@ -179,6 +179,9 @@
     "dot-prop": "^5.0.0",
     "is-number": "^7.0.0",
     "is-plain-object": "^3.0.0",
+    "lodash.compact": "^3.0.1",
+    "lodash.concat": "^4.5.0",
+    "lodash.flatten": "^4.4.0",
     "lodash.foreach": "^4.5.0",
     "lodash.isequal": "^4.5.0",
     "lodash.mergewith": "^4.6.1",
