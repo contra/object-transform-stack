@@ -1,7 +1,7 @@
 'use strict';
 
 exports.__esModule = true;
-exports.createLineString = exports.createPoint = exports.ensureMulti = exports.simplifyGeometry = exports.join = exports.concatenate = exports.flatten = exports.compact = exports.subtract = exports.add = exports.convert = exports.slug = exports.guid = exports.capitalizeWords = exports.capitalize = exports.phone = exports.normalize = undefined;
+exports.createLineString = exports.createPoint = exports.createArray = exports.createString = exports.ensureMulti = exports.simplifyGeometry = exports.join = exports.concatenate = exports.flatten = exports.compact = exports.subtract = exports.add = exports.convert = exports.split = exports.slug = exports.guid = exports.capitalizeWords = exports.capitalize = exports.phone = exports.normalize = undefined;
 
 var _phone = require('phone');
 
@@ -138,6 +138,20 @@ const slug = exports.slug = {
     if (args.length === 0) return;
     return (0, _slugify2.default)(args.join(' ')).toLowerCase();
   }
+};
+const split = exports.split = {
+  name: 'Split',
+  notes: 'Splits a string by a seperator into a list',
+  signature: [{
+    name: 'Value',
+    types: ['string'],
+    required: true
+  }, {
+    name: 'Separator',
+    types: ['string']
+  }],
+  returns: 'array',
+  execute: (v, sep = ', ') => v.split(sep)
 
   // Numbers
 };const convert = exports.convert = {
@@ -222,14 +236,14 @@ const concatenate = exports.concatenate = {
 };
 const join = exports.join = {
   name: 'Join',
-  notes: 'Converts all elements in an array to a string joined by a separator',
+  notes: 'Converts all elements in a list to a string joined by a separator',
   signature: [{
     name: 'Value',
     types: ['array'],
     required: true
   }, {
     name: 'Separator',
-    types: ['text']
+    types: ['string']
   }],
   returns: 'array',
   execute: (v, sep = ', ') => v.join(sep)
@@ -291,9 +305,39 @@ const ensureMulti = {
       coordinates: [coordinates]
     });
   }
+
+  // Type casting/creation
+};exports.ensureMulti = ensureMulti;
+const createString = exports.createString = {
+  name: 'Create Text',
+  notes: 'Converts any value to text',
+  signature: [{
+    name: 'Value',
+    types: 'any',
+    required: true
+  }],
+  returns: 'string',
+  execute: v => {
+    if (typeof v === 'string') return v; // already text
+    if (Array.isArray(v)) return v.join(', ');
+    if (v instanceof Date) return v.toISOString();
+    if (typeof v === 'object') return JSON.stringify(v);
+    return String(v);
+  }
 };
 
-exports.ensureMulti = ensureMulti;
+const createArray = exports.createArray = {
+  name: 'Create List',
+  notes: 'Constructs a list from a number of items',
+  splat: {
+    name: 'Value',
+    types: 'any',
+    required: 1
+  },
+  returns: 'array',
+  execute: (...a) => a
+};
+
 const createPoint = exports.createPoint = {
   name: 'Create Point',
   notes: 'Constructs a GeoJSON Point from a coordinate',

@@ -114,6 +114,25 @@ export const slug = {
     return slugify(args.join(' ')).toLowerCase()
   }
 }
+export const split = {
+  name: 'Split',
+  notes: 'Splits a string by a seperator into a list',
+  signature: [
+    {
+      name: 'Value',
+      types: [ 'string' ],
+      required: true
+    },
+    {
+      name: 'Separator',
+      types: [ 'string' ]
+    }
+  ],
+  returns: 'array',
+  execute: (v, sep=', ') =>
+    v.split(sep)
+}
+
 
 // Numbers
 export const convert = {
@@ -209,7 +228,7 @@ export const concatenate = {
 }
 export const join = {
   name: 'Join',
-  notes: 'Converts all elements in an array to a string joined by a separator',
+  notes: 'Converts all elements in a list to a string joined by a separator',
   signature: [
     {
       name: 'Value',
@@ -218,7 +237,7 @@ export const join = {
     },
     {
       name: 'Separator',
-      types: [ 'text' ]
+      types: [ 'string' ]
     }
   ],
   returns: 'array',
@@ -287,6 +306,39 @@ export const ensureMulti = {
       coordinates: [ coordinates ]
     }
   }
+}
+
+// Type casting/creation
+export const createString = {
+  name: 'Create Text',
+  notes: 'Converts any value to text',
+  signature: [
+    {
+      name: 'Value',
+      types: 'any',
+      required: true
+    }
+  ],
+  returns: 'string',
+  execute: (v) => {
+    if (typeof v === 'string') return v // already text
+    if (Array.isArray(v)) return v.join(', ')
+    if (v instanceof Date) return v.toISOString()
+    if (typeof v === 'object') return JSON.stringify(v)
+    return String(v)
+  }
+}
+
+export const createArray = {
+  name: 'Create List',
+  notes: 'Constructs a list from a number of items',
+  splat: {
+    name: 'Value',
+    types: 'any',
+    required: 1
+  },
+  returns: 'array',
+  execute: (...a) => a
 }
 
 export const createPoint = {
