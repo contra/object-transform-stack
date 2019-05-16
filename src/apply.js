@@ -15,17 +15,17 @@ const validateArgumentTypes = (transform, sig, arg, types) => {
   return true
 }
 
-const resolveTransform = (value, inp, opt) => {
+const resolveTransform = async (value, inp, opt) => {
   const transform = opt.transforms[value.transform]
   if (!transform || typeof transform.execute !== 'function') {
     throw new Error(`Invalid transform: ${value.transform}`)
   }
   const resolvedArgs = value.arguments
-    ? value.arguments.map((a) =>
+    ? await Promise.all(value.arguments.map(async (a) =>
       isValueObject(a)
         ? resolveFrom(a, inp, opt)
         : a
-    )
+    ))
     : []
 
   let skip = false
@@ -53,10 +53,10 @@ const resolveTransform = (value, inp, opt) => {
   return skip ? undefined : transform.execute(...resolvedArgs)
 }
 
-const resolveFrom = (value, inp, opt) => {
+const resolveFrom = async (value, inp, opt) => {
   let v = isValueObject(value)
     ? value.transform
-      ? resolveTransform(value, inp, opt)
+      ? await resolveTransform(value, inp, opt)
       : dot.get(inp, value.field)
     : value
 
@@ -65,11 +65,12 @@ const resolveFrom = (value, inp, opt) => {
   return v
 }
 
-export const transform = (stack, inp, { strict, transforms=transformDefs, types=typeDefs }={}) => {
+export const transform = async (stack, inp, { strict, transforms=transformDefs, types=typeDefs }={}) => {
   if (!Array.isArray(stack)) throw new Error('Missing stack argument!')
   if (inp == null || typeof inp !== 'object') return {} // short out on invalid input
-  return stack.reduce((prev, op) => {
-    dot.set(prev, op.to, resolveFrom(op.from, inp, { strict, transforms, types }))
-    return prev
-  }, {})
+  const out = {}
+  await Promise.all(stack.map(async (op) => {
+    dot.set(out, op.to, await resolveFrom(op.from, inp, { strict, transforms, types }))
+  }))
+  return out
 }

@@ -60,64 +60,84 @@ const basicTransforms = {
     ],
     returns: 'number',
     execute: (a, b) => a + b
+  },
+  sleepAdd: {
+    name: 'Sleep Add',
+    signature: [
+      {
+        name: 'A',
+        types: [ 'number' ],
+        required: true
+      },
+      {
+        name: 'B',
+        types: [ 'number' ],
+        required: true
+      }
+    ],
+    returns: 'number',
+    execute: async (a, b) =>
+      new Promise((resolve) =>
+        setTimeout(() => resolve(a + b), 500)
+      )
   }
 }
 
 describe('transform', () => {
-  it('should work on a basic object', () => {
+  it('should work on a basic object', async () => {
     const stack = [
       { to: 'b', from: { field: 'a' } }
     ]
-    const res = transform(stack, { a: 'b' })
+    const res = await transform(stack, { a: 'b' })
     should(res).eql({ b: 'b' })
   })
-  it('should work on a dot prop to', () => {
+  it('should work on a dot prop to', async () => {
     const stack = [
       { to: 'a.data', from: { field: 'a' } }
     ]
-    const res = transform(stack, { a: 'b' })
+    const res = await transform(stack, { a: 'b' })
     should(res).eql({ a: { data: 'b' } })
   })
-  it('should work on a dot prop from', () => {
+  it('should work on a dot prop from', async () => {
     const stack = [
       { to: 'a.data', from: { field: 'a.result' } }
     ]
-    const res = transform(stack, { a: { result: 'b' } })
+    const res = await transform(stack, { a: { result: 'b' } })
     should(res).eql({ a: { data: 'b' } })
   })
-  it('should work on a missing attribute', () => {
+  it('should work on a missing attribute', async () => {
     const stack = [
       { to: 'a.data', from: { field: 'a.result' } },
       { to: 'a.data2', from: { field: 'a.missing' } }
     ]
-    const res = transform(stack, { a: { result: 'b' } })
+    const res = await transform(stack, { a: { result: 'b' } })
     should(res).eql({ a: { data: 'b', data2: undefined } })
   })
-  it('should work on a missing attribute in strict mode', () => {
+  it('should work on a missing attribute in strict mode', async () => {
     const stack = [
       { to: 'a.data', from: { field: 'a.result' } },
       { to: 'a.data2', from: { field: 'a.missing' } }
     ]
-    const res = transform(stack, { a: { result: 'b' } }, { strict: true })
+    const res = await transform(stack, { a: { result: 'b' } }, { strict: true })
     should(res).eql({ a: { data: 'b', data2: null } })
   })
-  it('should work on a missing attribute with default', () => {
+  it('should work on a missing attribute with default', async () => {
     const stack = [
       { to: 'a.data', from: { field: 'a.result' } },
       { to: 'a.data2', from: { field: 'a.missing', defaultValue: 'c' } }
     ]
-    const res = transform(stack, { a: { result: 'b' } })
+    const res = await transform(stack, { a: { result: 'b' } })
     should(res).eql({ a: { data: 'b', data2: 'c' } })
   })
-  it('should work with multiple stack items that override eachother', () => {
+  it('should work with multiple stack items that override eachother', async () => {
     const stack = [
       { to: 'b', from: { field: 'a' } },
       { to: 'b', from: { field: 'c' } }
     ]
-    const res = transform(stack, { a: 'b', c: 'c' })
+    const res = await transform(stack, { a: 'b', c: 'c' })
     should(res).eql({ b: 'c' })
   })
-  it('should work with a basic transform', () => {
+  it('should work with a basic transform', async () => {
     const stack = [
       {
         to: 'b',
@@ -127,10 +147,10 @@ describe('transform', () => {
         }
       }
     ]
-    const res = transform(stack, { a: 'abc' }, { transforms: basicTransforms })
+    const res = await transform(stack, { a: 'abc' }, { transforms: basicTransforms })
     should(res).eql({ b: 'ABC' })
   })
-  it('should work with a basic transform and defaultValue on field', () => {
+  it('should work with a basic transform and defaultValue on field', async () => {
     const stack = [
       {
         to: 'b',
@@ -140,10 +160,10 @@ describe('transform', () => {
         }
       }
     ]
-    const res = transform(stack, { a: 'abc' }, { transforms: basicTransforms })
+    const res = await transform(stack, { a: 'abc' }, { transforms: basicTransforms })
     should(res).eql({ b: 'ABC' })
   })
-  it('should work with a basic transform and defaultValue on transform', () => {
+  it('should work with a basic transform and defaultValue on transform', async () => {
     const stack = [
       {
         to: 'b',
@@ -154,10 +174,10 @@ describe('transform', () => {
         }
       }
     ]
-    const res = transform(stack, { a: 'abc' }, { transforms: basicTransforms })
+    const res = await transform(stack, { a: 'abc' }, { transforms: basicTransforms })
     should(res).eql({ b: 'XYZ' })
   })
-  it('should work with nested transforms', () => {
+  it('should work with nested transforms', async () => {
     const stack = [
       {
         to: 'b',
@@ -172,10 +192,10 @@ describe('transform', () => {
         }
       }
     ]
-    const res = transform(stack, { a: '   abc   ' }, { transforms: basicTransforms })
+    const res = await transform(stack, { a: '   abc   ' }, { transforms: basicTransforms })
     should(res).eql({ b: 'ABC' })
   })
-  it('should work with flat value transforms', () => {
+  it('should work with flat value transforms', async () => {
     const stack = [
       {
         to: 'b',
@@ -188,10 +208,26 @@ describe('transform', () => {
         }
       }
     ]
-    const res = transform(stack, { a: 1 }, { transforms: basicTransforms })
+    const res = await transform(stack, { a: 1 }, { transforms: basicTransforms })
     should(res).eql({ b: 124 })
   })
-  it('should error with invalid transform values', (done) => {
+  it('should work with async transforms', async () => {
+    const stack = [
+      {
+        to: 'b',
+        from: {
+          transform: 'sleepAdd',
+          arguments: [
+            { field: 'a' },
+            123
+          ]
+        }
+      }
+    ]
+    const res = await transform(stack, { a: 1 }, { transforms: basicTransforms })
+    should(res).eql({ b: 124 })
+  })
+  it('should error with invalid transform values', async () => {
     const stack = [
       {
         to: 'b',
@@ -207,12 +243,13 @@ describe('transform', () => {
       }
     ]
     try {
-      transform(stack, { a: 123 }, { transforms: basicTransforms })
+      await transform(stack, { a: 123 }, { transforms: basicTransforms })
     } catch (err) {
       should.exist(err)
       should(err.message).eql('Argument "Text" for "Trim" must be of type: string, instead got number, date')
-      done()
+      return
     }
+    throw new Error('Did not throw!')
   })
 })
 

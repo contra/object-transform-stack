@@ -49,7 +49,7 @@ const input = {
   birth: '11/12/27'
 }
 
-console.log(transform(stack, input, { transforms }))
+console.log(await transform(stack, input, { transforms }))
 /*
 Prints:
 
