@@ -246,7 +246,7 @@ describe('transform', () => {
       await transform(stack, { a: 123 }, { transforms: basicTransforms })
     } catch (err) {
       should.exist(err)
-      should(err.message).eql('Argument "Text" for "Trim" must be of type: string, instead got date, number')
+      should(err.message).eql('Argument "Text" for "Trim" must be of type: string, instead got number')
       return
     }
     throw new Error('Did not throw!')
@@ -273,7 +273,7 @@ describe('paths', () => {
     should(res).eql([
       { path: 'a', types: [ 'object' ] },
       { path: 'a.b', types: [ 'object' ] },
-      { path: 'a.b.c', types: [ 'date', 'number' ] },
+      { path: 'a.b.c', types: [ 'number' ] },
       { path: 'a.b.d', types: [ 'string' ] },
       { path: 'z', types: [ 'string' ] }
     ])
@@ -300,21 +300,25 @@ describe('analyze', () => {
     should(res).eql([
       { path: 'a', types: [ 'object' ] },
       { path: 'a.b', types: [ 'object' ] },
-      { path: 'a.b.c', types: [ 'date', 'number', 'string' ] },
-      { path: 'a.b.d', types: [ 'date', 'number', 'string' ] },
-      { path: 'z', types: [ 'date', 'number', 'string' ] },
+      { path: 'a.b.c', types: [ 'number', 'string' ] },
+      { path: 'a.b.d', types: [ 'number', 'string' ] },
+      { path: 'z', types: [ 'number', 'string' ] },
       { path: 'y', types: [ 'string' ] },
       { path: 'x', types: [ 'string' ] }
     ])
   })
   it('should work on a big object', () => {
-    const res = analyze(big)
+    // convert dates ahead of time to test that
+    const res = analyze(big.map((i) => ({
+      ...i,
+      DATE: new Date(i.DATE).toISOString()
+    })))
     should(res).eql([
       { path: 'CALLTYPE', types: [ 'string' ] },
       { path: 'INCIDENT_NO', types: [ 'number', 'string' ] },
       { path: 'DATE', types: [ 'date', 'string' ] },
-      { path: 'LOCATION', types: [ 'date', 'number', 'string' ] },
-      { path: 'DISPO_CODE', types: [ 'date', 'number', 'string' ] },
+      { path: 'LOCATION', types: [ 'number', 'string' ] },
+      { path: 'DISPO_CODE', types: [ 'number', 'string' ] },
       { path: 'CALLTYPE_DESC', types: [ 'string' ] }
     ])
   })

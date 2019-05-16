@@ -1,5 +1,6 @@
 import isObject from 'is-plain-object'
 import isNumber from 'is-number'
+import isDate from 'is-date-like'
 
 export const number = {
   name: 'Number',
@@ -23,7 +24,7 @@ export const object = {
 }
 export const date = {
   name: 'Date/Time',
-  check: (v) => v instanceof Date && !isNaN(v) || !isNaN(Date.parse(v))
+  check: (v) => isDate(v)
 }
 export const point = {
   name: 'GeoJSON Point',

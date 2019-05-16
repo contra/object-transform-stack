@@ -11,6 +11,10 @@ var _isNumber = require('is-number');
 
 var _isNumber2 = _interopRequireDefault(_isNumber);
 
+var _isDateLike = require('is-date-like');
+
+var _isDateLike2 = _interopRequireDefault(_isDateLike);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const number = exports.number = {
@@ -35,7 +39,7 @@ const object = exports.object = {
 };
 const date = exports.date = {
   name: 'Date/Time',
-  check: v => v instanceof Date && !isNaN(v) || !isNaN(Date.parse(v))
+  check: v => (0, _isDateLike2.default)(v)
 };
 const point = exports.point = {
   name: 'GeoJSON Point',
