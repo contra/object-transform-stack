@@ -14,37 +14,46 @@ var _isNumber2 = _interopRequireDefault(_isNumber);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const number = exports.number = {
-  check: v => (0, _isNumber2.default)(v),
-  ensure: v => parseFloat(v)
+  name: 'Number',
+  check: v => (0, _isNumber2.default)(v)
 };
 const string = exports.string = {
+  name: 'String',
   check: v => typeof v === 'string'
 };
 const boolean = exports.boolean = {
+  name: 'True/False',
   check: v => typeof v === 'boolean'
 };
 const array = exports.array = {
+  name: 'Array',
   check: v => Array.isArray(v)
 };
 const object = exports.object = {
+  name: 'Object',
   check: v => (0, _isPlainObject2.default)(v)
 };
 const date = exports.date = {
-  check: v => v instanceof Date && !isNaN(v) || !isNaN(Date.parse(v)),
-  ensure: v => v instanceof Date ? v : new Date(Date.parse(v))
+  name: 'Date',
+  check: v => v instanceof Date && !isNaN(v) || !isNaN(Date.parse(v))
 };
 const point = exports.point = {
-  check: v => object.check(v) && v.type === 'Point'
+  name: 'GeoJSON Point',
+  check: v => object.check(v) && v.type === 'Point' || v.type === 'Feature ' && v.geometry && v.geometry.type === 'Point'
 };
 const polygon = exports.polygon = {
-  check: v => object.check(v) && v.type === 'Polygon'
+  name: 'GeoJSON Polygon',
+  check: v => object.check(v) && v.type === 'Polygon' || v.type === 'Feature ' && v.geometry && v.geometry.type === 'Polygon'
 };
 const multipolygon = exports.multipolygon = {
-  check: v => object.check(v) && v.type === 'MultiPolygon'
+  name: 'GeoJSON MultiPolygon',
+  check: v => object.check(v) && v.type === 'MultiPolygon' || v.type === 'Feature ' && v.geometry && v.geometry.type === 'MultiPolygon'
 };
 const linestring = exports.linestring = {
-  check: v => object.check(v) && v.type === 'LineString'
+  name: 'GeoJSON LineString',
+  check: v => object.check(v) && v.type === 'LineString' || v.type === 'Feature ' && v.geometry && v.geometry.type === 'LineString'
 };
 const multilinestring = exports.multilinestring = {
-  check: v => object.check(v) && v.type === 'MultiLineString'
+  name: 'GeoJSON MultiLineString',
+  check: v => object.check(v) && v.type === 'MultiLineString' || v.type === 'Feature ' && v.geometry && v.geometry.type === 'MultiLineString'
 };
