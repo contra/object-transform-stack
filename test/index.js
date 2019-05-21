@@ -201,6 +201,18 @@ describe('transform', () => {
     const res = await transform(stack, { a: 1 }, { transforms: basicTransforms })
     should(res).eql({ b: 124 })
   })
+  it('should work with optional transform arguments', async () => {
+    const stack = {
+      area: {
+        transform: 'simplifyGeometry',
+        arguments: [
+          { field: 'zone' }
+        ]
+      }
+    }
+    const res = await transform(stack, { zone: uas.features[0].geometry })
+    should.exist(res.area)
+  })
   it('should error with invalid transform values', async () => {
     const stack = {
       'b': {
