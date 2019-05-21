@@ -29,30 +29,30 @@ export const date = {
 export const point = {
   name: 'GeoJSON Point',
   check: (v) =>
-    object.check(v) && v.type === 'Point'
-      || v.type === 'Feature ' && v.geometry && v.geometry.type === 'Point'
+    object.check(v) && (v.type === 'Point'
+      || v.type === 'Feature ' && v.geometry && v.geometry.type === 'Point')
 }
 export const polygon = {
   name: 'GeoJSON Polygon',
   check: (v) =>
-    object.check(v) && v.type === 'Polygon'
-      || v.type === 'Feature ' && v.geometry && v.geometry.type === 'Polygon'
+    object.check(v) && (v.type === 'Polygon'
+      || v.type === 'Feature ' && v.geometry && v.geometry.type === 'Polygon')
 }
 export const multipolygon = {
   name: 'GeoJSON MultiPolygon',
   check: (v) =>
-    object.check(v) && v.type === 'MultiPolygon'
-      || v.type === 'Feature ' && v.geometry && v.geometry.type === 'MultiPolygon'
+    object.check(v) && (v.type === 'MultiPolygon'
+      || v.type === 'Feature ' && v.geometry && v.geometry.type === 'MultiPolygon')
 }
 export const linestring = {
   name: 'GeoJSON LineString',
   check: (v) =>
-    object.check(v) && v.type === 'LineString'
-      || v.type === 'Feature ' && v.geometry && v.geometry.type === 'LineString'
+    object.check(v) && (v.type === 'LineString'
+      || v.type === 'Feature ' && v.geometry && v.geometry.type === 'LineString')
 }
 export const multilinestring = {
   name: 'GeoJSON MultiLineString',
   check: (v) =>
-    object.check(v) && v.type === 'MultiLineString'
-      || v.type === 'Feature ' && v.geometry && v.geometry.type === 'MultiLineString'
+    object.check(v) && (v.type === 'MultiLineString'
+      || v.type === 'Feature ' && v.geometry && v.geometry.type === 'MultiLineString')
 }
