@@ -85,163 +85,134 @@ const basicTransforms = {
 
 describe('transform', () => {
   it('should work on a basic object', async () => {
-    const stack = [
-      { to: 'b', from: { field: 'a' } }
-    ]
+    const stack = {
+      b: { field: 'a' }
+    }
     const res = await transform(stack, { a: 'b' })
     should(res).eql({ b: 'b' })
   })
   it('should work on a dot prop to', async () => {
-    const stack = [
-      { to: 'a.data', from: { field: 'a' } }
-    ]
+    const stack = {
+      'a.data': { field: 'a' }
+    }
     const res = await transform(stack, { a: 'b' })
     should(res).eql({ a: { data: 'b' } })
   })
   it('should work on a dot prop from', async () => {
-    const stack = [
-      { to: 'a.data', from: { field: 'a.result' } }
-    ]
+    const stack = {
+      'a.data': { field: 'a.result' }
+    }
     const res = await transform(stack, { a: { result: 'b' } })
     should(res).eql({ a: { data: 'b' } })
   })
   it('should work on a missing attribute', async () => {
-    const stack = [
-      { to: 'a.data', from: { field: 'a.result' } },
-      { to: 'a.data2', from: { field: 'a.missing' } }
-    ]
+    const stack = {
+      'a.data': { field: 'a.result' },
+      'a.data2': { field: 'a.missing' }
+    }
     const res = await transform(stack, { a: { result: 'b' } })
     should(res).eql({ a: { data: 'b', data2: undefined } })
   })
   it('should work on a missing attribute in strict mode', async () => {
-    const stack = [
-      { to: 'a.data', from: { field: 'a.result' } },
-      { to: 'a.data2', from: { field: 'a.missing' } }
-    ]
+    const stack = {
+      'a.data': { field: 'a.result' },
+      'a.data2': { field: 'a.missing' }
+    }
     const res = await transform(stack, { a: { result: 'b' } }, { strict: true })
     should(res).eql({ a: { data: 'b', data2: null } })
   })
   it('should work on a missing attribute with default', async () => {
-    const stack = [
-      { to: 'a.data', from: { field: 'a.result' } },
-      { to: 'a.data2', from: { field: 'a.missing', defaultValue: 'c' } }
-    ]
+    const stack = {
+      'a.data': { field: 'a.result' },
+      'a.data2': { field: 'a.missing', defaultValue: 'c' }
+    }
     const res = await transform(stack, { a: { result: 'b' } })
     should(res).eql({ a: { data: 'b', data2: 'c' } })
   })
-  it('should work with multiple stack items that override eachother', async () => {
-    const stack = [
-      { to: 'b', from: { field: 'a' } },
-      { to: 'b', from: { field: 'c' } }
-    ]
-    const res = await transform(stack, { a: 'b', c: 'c' })
-    should(res).eql({ b: 'c' })
-  })
   it('should work with a basic transform', async () => {
-    const stack = [
-      {
-        to: 'b',
-        from: {
-          transform: 'uppercase',
-          arguments: [ { field: 'a' } ]
-        }
+    const stack = {
+      b: {
+        transform: 'uppercase',
+        arguments: [ { field: 'a' } ]
       }
-    ]
+    }
     const res = await transform(stack, { a: 'abc' }, { transforms: basicTransforms })
     should(res).eql({ b: 'ABC' })
   })
   it('should work with a basic transform and defaultValue on field', async () => {
-    const stack = [
-      {
-        to: 'b',
-        from: {
-          transform: 'uppercase',
-          arguments: [ { field: 'z', defaultValue: 'abc' } ]
-        }
+    const stack = {
+      'b': {
+        transform: 'uppercase',
+        arguments: [ { field: 'z', defaultValue: 'abc' } ]
       }
-    ]
+    }
     const res = await transform(stack, { a: 'abc' }, { transforms: basicTransforms })
     should(res).eql({ b: 'ABC' })
   })
   it('should work with a basic transform and defaultValue on transform', async () => {
-    const stack = [
-      {
-        to: 'b',
-        from: {
-          transform: 'uppercase',
-          defaultValue: 'XYZ',
-          arguments: [ { field: 'z' } ]
-        }
+    const stack = {
+      'b': {
+        transform: 'uppercase',
+        defaultValue: 'XYZ',
+        arguments: [ { field: 'z' } ]
       }
-    ]
+    }
     const res = await transform(stack, { a: 'abc' }, { transforms: basicTransforms })
     should(res).eql({ b: 'XYZ' })
   })
   it('should work with nested transforms', async () => {
-    const stack = [
-      {
-        to: 'b',
-        from: {
-          transform: 'uppercase',
-          arguments: [
-            {
-              transform: 'trim',
-              arguments: [ { field: 'a' } ]
-            }
-          ]
-        }
+    const stack = {
+      'b': {
+        transform: 'uppercase',
+        arguments: [
+          {
+            transform: 'trim',
+            arguments: [ { field: 'a' } ]
+          }
+        ]
       }
-    ]
+    }
     const res = await transform(stack, { a: '   abc   ' }, { transforms: basicTransforms })
     should(res).eql({ b: 'ABC' })
   })
   it('should work with flat value transforms', async () => {
-    const stack = [
-      {
-        to: 'b',
-        from: {
-          transform: 'add',
-          arguments: [
-            { field: 'a' },
-            123
-          ]
-        }
+    const stack = {
+      'b': {
+        transform: 'add',
+        arguments: [
+          { field: 'a' },
+          123
+        ]
       }
-    ]
+    }
     const res = await transform(stack, { a: 1 }, { transforms: basicTransforms })
     should(res).eql({ b: 124 })
   })
   it('should work with async transforms', async () => {
-    const stack = [
-      {
-        to: 'b',
-        from: {
-          transform: 'sleepAdd',
-          arguments: [
-            { field: 'a' },
-            123
-          ]
-        }
+    const stack = {
+      'b': {
+        transform: 'sleepAdd',
+        arguments: [
+          { field: 'a' },
+          123
+        ]
       }
-    ]
+    }
     const res = await transform(stack, { a: 1 }, { transforms: basicTransforms })
     should(res).eql({ b: 124 })
   })
   it('should error with invalid transform values', async () => {
-    const stack = [
-      {
-        to: 'b',
-        from: {
-          transform: 'uppercase',
-          arguments: [
-            {
-              transform: 'trim',
-              arguments: [ { field: 'a' } ]
-            }
-          ]
-        }
+    const stack = {
+      'b': {
+        transform: 'uppercase',
+        arguments: [
+          {
+            transform: 'trim',
+            arguments: [ { field: 'a' } ]
+          }
+        ]
       }
-    ]
+    }
     try {
       await transform(stack, { a: 123 }, { transforms: basicTransforms })
     } catch (err) {

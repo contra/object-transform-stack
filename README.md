@@ -27,19 +27,13 @@ const transforms = {
   }
 }
 
-const stack = [
-  {
-    to: 'bday',
-    from: { field: 'birth' }
-  },
-  {
-    to: 'name',
-    from: {
-      transform: 'trim',
-      arguments: [ { field: 'name.legal' } ]
-    }
+const stack = {
+  bday: { field: 'birth' },
+  name: {
+    transform: 'trim',
+    arguments: [ { field: 'name.legal' } ]
   }
-]
+}
 
 const input = {
   name: {

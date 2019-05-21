@@ -66,11 +66,11 @@ const resolveFrom = async (value, inp, opt) => {
 }
 
 export const transform = async (stack, inp, { strict, transforms=transformDefs, types=typeDefs }={}) => {
-  if (!Array.isArray(stack)) throw new Error('Missing stack argument!')
+  if (typeof stack !== 'object') throw new Error('Missing stack argument!')
   if (inp == null || typeof inp !== 'object') return {} // short out on invalid input
   const out = {}
-  await Promise.all(stack.map(async (op) => {
-    dot.set(out, op.to, await resolveFrom(op.from, inp, { strict, transforms, types }))
+  await Promise.all(Object.entries(stack).map(async ([ to, from ]) => {
+    dot.set(out, to, await resolveFrom(from, inp, { strict, transforms, types }))
   }))
   return out
 }
