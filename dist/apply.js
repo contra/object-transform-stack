@@ -32,6 +32,7 @@ const isValueObject = v => (0, _isPlainObject2.default)(v) && (v.field || v.tran
 const validateArgumentTypes = (transform, sig, arg, types) => {
   if (sig.types === 'any') return true; // allows anything
   if (!sig.required && arg == null) return true; // not present, so has a default
+  if (sig.required && arg == null) throw new Error(`Argument "${sig.name}" for "${transform.name}" is required`);
   const argTypes = (0, _getTypes2.default)(arg, types);
   const typesValid = argTypes.some(t => sig.types.includes(t));
   if (!typesValid) throw new Error(`Argument "${sig.name}" for "${transform.name}" must be of type: ${sig.types.join(', ')}, instead got ${argTypes.join(', ')}`);
