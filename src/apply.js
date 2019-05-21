@@ -9,6 +9,7 @@ const isValueObject = (v) =>
 
 const validateArgumentTypes = (transform, sig, arg, types) => {
   if (sig.types === 'any') return true // allows anything
+  if (!sig.required && arg == null) return true // not present, so has a default
   const argTypes = getTypes(arg, types)
   const typesValid = argTypes.some((t) => sig.types.includes(t))
   if (!typesValid) throw new Error(`Argument "${sig.name}" for "${transform.name}" must be of type: ${sig.types.join(', ')}, instead got ${argTypes.join(', ')}`)
