@@ -116,7 +116,7 @@ export const slug = {
 }
 export const split = {
   name: 'Split',
-  notes: 'Splits a string by a seperator into a list',
+  notes: 'Splits a string by a separator into a list',
   signature: [
     {
       name: 'Value',

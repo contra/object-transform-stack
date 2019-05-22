@@ -141,7 +141,7 @@ const slug = exports.slug = {
 };
 const split = exports.split = {
   name: 'Split',
-  notes: 'Splits a string by a seperator into a list',
+  notes: 'Splits a string by a separator into a list',
   signature: [{
     name: 'Value',
     types: ['string'],
