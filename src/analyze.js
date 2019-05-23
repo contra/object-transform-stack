@@ -6,10 +6,13 @@ import isObject from 'is-plain-object'
 import getTypes from './getTypes'
 import * as typeDefs from './presets/types'
 
-const getPaths = (o) => {
+const getPaths = (o, { depthLimit, arrayLimit }={}) => {
   const out = {}
   const visit = (obj, keys=[]) => {
+    const isArray = Array.isArray(obj)
     forEach(obj, (v, key) => {
+      if (isArray && key > arrayLimit) return // hit our limit
+      if (depthLimit && keys.length >= depthLimit) return
       keys.push(String(key).replace(/\./g, '\\.'))
       out[keys.join('.')] = v
       if (Array.isArray(v) || isObject(v)) visit(v, keys)
@@ -20,8 +23,8 @@ const getPaths = (o) => {
   return out
 }
 
-export const paths = (inp, { types=typeDefs }={}) => {
-  const paths = getPaths(inp)
+export const paths = (inp, { types=typeDefs, depthLimit, arrayLimit }={}) => {
+  const paths = getPaths(inp, { depthLimit, arrayLimit })
   return Object.entries(paths).reduce((prev, [ path, v ]) => {
     prev.push({
       path,
@@ -31,9 +34,9 @@ export const paths = (inp, { types=typeDefs }={}) => {
   }, [])
 }
 
-export const analyze = (inp, { types=typeDefs }={}) => {
+export const analyze = (inp, { types=typeDefs, depthLimit, arrayLimit }={}) => {
   const getPathsAndTypes = (i) => {
-    const paths = getPaths(i)
+    const paths = getPaths(i, { types, depthLimit, arrayLimit })
     return Object.entries(paths).reduce((prev, [ path, v ]) => {
       prev[path] = getTypes(v, types)
       return prev

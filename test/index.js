@@ -5,6 +5,8 @@ import big from './big'
 import uas from './uas'
 import uasExpected from './uas-expected'
 import featuresExpected from './uas-features-expected'
+import featuresExpectedDepthLimited from './uas-features-expected-depth-limit'
+import featuresExpectedArrayLimited from './uas-features-expected-array-limit'
 import { transform, paths, analyze } from '../src'
 
 const basicTransforms = {
@@ -308,5 +310,13 @@ describe('analyze', () => {
   it('should work on geo object items', () => {
     const res = analyze(uas.features)
     should(res).eql(featuresExpected)
+  })
+  it('should work with depth limit', () => {
+    const res = analyze(uas.features, { depthLimit: 2 })
+    should(res).eql(featuresExpectedDepthLimited)
+  })
+  it('should work with array limit', () => {
+    const res = analyze(uas.features, { arrayLimit: 5 })
+    should(res).eql(featuresExpectedArrayLimited)
   })
 })

@@ -1,0 +1,45 @@
+[
+  {
+    "path": "type",
+    "types": [
+      "string"
+    ]
+  },
+  {
+    "path": "properties",
+    "types": [
+      "object"
+    ]
+  },
+  {
+    "path": "properties.name",
+    "types": [
+      "string"
+    ]
+  },
+  {
+    "path": "properties.operators",
+    "types": [
+      "array"
+    ]
+  },
+  {
+    "path": "geometry",
+    "types": [
+      "object",
+      "polygon"
+    ]
+  },
+  {
+    "path": "geometry.type",
+    "types": [
+      "string"
+    ]
+  },
+  {
+    "path": "geometry.coordinates",
+    "types": [
+      "array"
+    ]
+  }
+]

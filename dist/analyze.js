@@ -35,10 +35,13 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const getPaths = o => {
+const getPaths = (o, { depthLimit, arrayLimit } = {}) => {
   const out = {};
   const visit = (obj, keys = []) => {
+    const isArray = Array.isArray(obj);
     (0, _lodash2.default)(obj, (v, key) => {
+      if (isArray && key > arrayLimit) return; // hit our limit
+      if (depthLimit && keys.length >= depthLimit) return;
       keys.push(String(key).replace(/\./g, '\\.'));
       out[keys.join('.')] = v;
       if (Array.isArray(v) || (0, _isPlainObject2.default)(v)) visit(v, keys);
@@ -49,8 +52,8 @@ const getPaths = o => {
   return out;
 };
 
-const paths = exports.paths = (inp, { types = typeDefs } = {}) => {
-  const paths = getPaths(inp);
+const paths = exports.paths = (inp, { types = typeDefs, depthLimit, arrayLimit } = {}) => {
+  const paths = getPaths(inp, { depthLimit, arrayLimit });
   return Object.entries(paths).reduce((prev, [path, v]) => {
     prev.push({
       path,
@@ -60,9 +63,9 @@ const paths = exports.paths = (inp, { types = typeDefs } = {}) => {
   }, []);
 };
 
-const analyze = exports.analyze = (inp, { types = typeDefs } = {}) => {
+const analyze = exports.analyze = (inp, { types = typeDefs, depthLimit, arrayLimit } = {}) => {
   const getPathsAndTypes = i => {
-    const paths = getPaths(i);
+    const paths = getPaths(i, { types, depthLimit, arrayLimit });
     return Object.entries(paths).reduce((prev, [path, v]) => {
       prev[path] = (0, _getTypes2.default)(v, types);
       return prev;
