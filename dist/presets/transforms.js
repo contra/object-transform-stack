@@ -112,8 +112,8 @@ const guid = exports.guid = {
   name: 'Unique ID',
   notes: 'Combines multiple semi-unique values into a Globally Unique ID (GUID)',
   splat: {
-    name: 'Value',
-    types: 'any',
+    name: 'Values',
+    types: ['string', 'number', 'date', 'boolean'],
     required: 1
   },
   returns: 'string',
@@ -128,8 +128,8 @@ const slug = exports.slug = {
   name: 'Slug',
   notes: 'Combines multiple semi-unique values into a human readable ID',
   splat: {
-    name: 'Value',
-    types: 'any',
+    name: 'Values',
+    types: ['string', 'number', 'date', 'boolean'],
     required: 1
   },
   returns: 'string',
@@ -182,7 +182,7 @@ const add = exports.add = {
   name: 'Add',
   notes: 'Applies addition to multiple numbers',
   splat: {
-    name: 'Value',
+    name: 'Values',
     types: ['number'],
     required: 2
   },
@@ -193,7 +193,7 @@ const subtract = exports.subtract = {
   name: 'Subtract',
   notes: 'Applies subtraction to multiple numbers',
   splat: {
-    name: 'Value',
+    name: 'Values',
     types: ['number'],
     required: 2
   },
@@ -227,7 +227,7 @@ const concatenate = exports.concatenate = {
   name: 'Concatenate',
   notes: 'Merges multiple lists together',
   splat: {
-    name: 'Value',
+    name: 'Values',
     types: ['array'],
     required: 2
   },
@@ -330,7 +330,7 @@ const createArray = exports.createArray = {
   name: 'Create List',
   notes: 'Constructs a list from a number of items',
   splat: {
-    name: 'Value',
+    name: 'Values',
     types: 'any',
     required: 1
   },
