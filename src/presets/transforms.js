@@ -240,7 +240,7 @@ export const join = {
       types: [ 'string' ]
     }
   ],
-  returns: 'array',
+  returns: 'string',
   execute: (v, sep=', ') =>
     v.join(sep)
 }

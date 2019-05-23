@@ -1,6 +1,6 @@
 {
   "name": "object-transform-stack",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "description": "Simple module to map one object to another using a stack of declarative pointers and transforms",
   "main": "dist/index.js",
   "keywords": [

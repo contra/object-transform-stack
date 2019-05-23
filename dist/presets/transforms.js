@@ -245,7 +245,7 @@ const join = exports.join = {
     name: 'Separator',
     types: ['string']
   }],
-  returns: 'array',
+  returns: 'string',
   execute: (v, sep = ', ') => v.join(sep)
 
   // Geometries
