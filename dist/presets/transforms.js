@@ -47,6 +47,11 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
 
 // TODO:
 // tz, geo.locate, geo.search, geo.intersection, geo.snap, geo.navigate, geo.snap, geo.tz
+const convertPossibilities = (0, _convertUnits2.default)().list().map(i => ({
+  value: i.abbr,
+  label: i.singular,
+  group: [i.measure, i.system]
+}));
 
 // Strings
 const normalize = exports.normalize = {
@@ -164,11 +169,13 @@ const split = exports.split = {
   }, {
     name: 'From Unit',
     types: ['string'],
-    required: true
+    required: true,
+    options: convertPossibilities
   }, {
     name: 'To Unit',
     types: ['string'],
-    required: true
+    required: true,
+    options: convertPossibilities
   }],
   returns: 'number',
   execute: (v, from, to) => {

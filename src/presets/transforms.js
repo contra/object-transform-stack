@@ -11,6 +11,11 @@ import { simplify, truncate, cleanCoords } from '@turf/turf'
 
 // TODO:
 // tz, geo.locate, geo.search, geo.intersection, geo.snap, geo.navigate, geo.snap, geo.tz
+const convertPossibilities = convertUnits().list().map((i) => ({
+  value: i.abbr,
+  label: i.singular,
+  group: [ i.measure, i.system ]
+}))
 
 // Strings
 export const normalize = {
@@ -147,12 +152,14 @@ export const convert = {
     {
       name: 'From Unit',
       types: [ 'string' ],
-      required: true
+      required: true,
+      options: convertPossibilities
     },
     {
       name: 'To Unit',
       types: [ 'string' ],
-      required: true
+      required: true,
+      options: convertPossibilities
     }
   ],
   returns: 'number',
