@@ -316,6 +316,20 @@ export const ensureMulti = {
 }
 
 // Type casting/creation
+export const creatBoolean = {
+  name: 'Create Boolean (True/False)',
+  notes: 'Converts any value to a boolean',
+  signature: [
+    {
+      name: 'Value',
+      types: 'any',
+      required: true
+    }
+  ],
+  returns: 'boolean',
+  execute: (v) => Boolean(v)
+}
+
 export const createString = {
   name: 'Create Text',
   notes: 'Converts any value to text',

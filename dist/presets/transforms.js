@@ -1,7 +1,7 @@
 'use strict';
 
 exports.__esModule = true;
-exports.createLineString = exports.createPoint = exports.createArray = exports.createString = exports.ensureMulti = exports.simplifyGeometry = exports.join = exports.concatenate = exports.flatten = exports.compact = exports.subtract = exports.add = exports.convert = exports.split = exports.slug = exports.guid = exports.capitalizeWords = exports.capitalize = exports.phone = exports.normalize = undefined;
+exports.createLineString = exports.createPoint = exports.createArray = exports.createString = exports.creatBoolean = exports.ensureMulti = exports.simplifyGeometry = exports.join = exports.concatenate = exports.flatten = exports.compact = exports.subtract = exports.add = exports.convert = exports.split = exports.slug = exports.guid = exports.capitalizeWords = exports.capitalize = exports.phone = exports.normalize = undefined;
 
 var _phone = require('phone');
 
@@ -315,6 +315,18 @@ const ensureMulti = {
 
   // Type casting/creation
 };exports.ensureMulti = ensureMulti;
+const creatBoolean = exports.creatBoolean = {
+  name: 'Create Boolean (True/False)',
+  notes: 'Converts any value to a boolean',
+  signature: [{
+    name: 'Value',
+    types: 'any',
+    required: true
+  }],
+  returns: 'boolean',
+  execute: v => Boolean(v)
+};
+
 const createString = exports.createString = {
   name: 'Create Text',
   notes: 'Converts any value to text',
