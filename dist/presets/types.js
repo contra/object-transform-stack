@@ -1,7 +1,7 @@
 'use strict';
 
 exports.__esModule = true;
-exports.multilinestring = exports.linestring = exports.multipolygon = exports.polygon = exports.point = exports.date = exports.object = exports.array = exports.boolean = exports.string = exports.number = undefined;
+exports.multiline = exports.line = exports.multipolygon = exports.polygon = exports.point = exports.date = exports.object = exports.array = exports.boolean = exports.string = exports.number = undefined;
 
 var _isPlainObject = require('is-plain-object');
 
@@ -53,11 +53,11 @@ const multipolygon = exports.multipolygon = {
   name: 'GeoJSON MultiPolygon',
   check: v => object.check(v) && (v.type === 'MultiPolygon' || v.type === 'Feature ' && v.geometry && v.geometry.type === 'MultiPolygon')
 };
-const linestring = exports.linestring = {
+const line = exports.line = {
   name: 'GeoJSON LineString',
   check: v => object.check(v) && (v.type === 'LineString' || v.type === 'Feature ' && v.geometry && v.geometry.type === 'LineString')
 };
-const multilinestring = exports.multilinestring = {
+const multiline = exports.multiline = {
   name: 'GeoJSON MultiLineString',
   check: v => object.check(v) && (v.type === 'MultiLineString' || v.type === 'Feature ' && v.geometry && v.geometry.type === 'MultiLineString')
 };

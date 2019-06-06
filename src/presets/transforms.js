@@ -259,7 +259,7 @@ export const simplifyGeometry = {
   signature: [
     {
       name: 'Geometry',
-      types: [ 'point', 'linestring', 'polygon', 'multilinestring', 'multipolygon' ],
+      types: [ 'point', 'line', 'polygon', 'multiline', 'multipolygon' ],
       required: true
     },
     {
@@ -267,7 +267,7 @@ export const simplifyGeometry = {
       types: [ 'number' ]
     }
   ],
-  returns: [ 'point', 'linestring', 'polygon', 'multilinestring', 'multipolygon' ],
+  returns: [ 'point', 'line', 'polygon', 'multiline', 'multipolygon' ],
   execute: (geometry, tolerance=1) => {
     const actualTolerance = tolerance * 0.00001 // tolerance arg is in meters
     geometry = geometry.geometry || geometry
@@ -295,11 +295,11 @@ export const ensureMulti = {
   signature: [
     {
       name: 'Geometry',
-      types: [ 'linestring', 'polygon', 'multilinestring', 'multipolygon' ],
+      types: [ 'line', 'polygon', 'multiline', 'multipolygon' ],
       required: true
     }
   ],
-  returns: [ 'multilinestring', 'multipolygon' ],
+  returns: [ 'multiline', 'multipolygon' ],
   execute: (geometry) => {
     geometry = geometry.geometry || geometry
     if (!geometry.type) throw new Error('type is required')
@@ -409,7 +409,7 @@ export const createLineString = {
       required: true
     }
   ],
-  returns: 'linestring',
+  returns: 'line',
   execute: (startLon, startLat, endLon, endLat) => ({
     type: 'LineString',
     coordinates: [

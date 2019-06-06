@@ -44,13 +44,13 @@ export const multipolygon = {
     object.check(v) && (v.type === 'MultiPolygon'
       || v.type === 'Feature ' && v.geometry && v.geometry.type === 'MultiPolygon')
 }
-export const linestring = {
+export const line = {
   name: 'GeoJSON LineString',
   check: (v) =>
     object.check(v) && (v.type === 'LineString'
       || v.type === 'Feature ' && v.geometry && v.geometry.type === 'LineString')
 }
-export const multilinestring = {
+export const multiline = {
   name: 'GeoJSON MultiLineString',
   check: (v) =>
     object.check(v) && (v.type === 'MultiLineString'

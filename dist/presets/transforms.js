@@ -261,13 +261,13 @@ const join = exports.join = {
   notes: 'Removes excess precision and simplifies the shape of any geometry',
   signature: [{
     name: 'Geometry',
-    types: ['point', 'linestring', 'polygon', 'multilinestring', 'multipolygon'],
+    types: ['point', 'line', 'polygon', 'multiline', 'multipolygon'],
     required: true
   }, {
     name: 'Tolerance',
     types: ['number']
   }],
-  returns: ['point', 'linestring', 'polygon', 'multilinestring', 'multipolygon'],
+  returns: ['point', 'line', 'polygon', 'multiline', 'multipolygon'],
   execute: (geometry, tolerance = 1) => {
     const actualTolerance = tolerance * 0.00001; // tolerance arg is in meters
     geometry = geometry.geometry || geometry;
@@ -294,10 +294,10 @@ const ensureMulti = {
   notes: 'Converts any geometry to it\'s corresponding Multi type if needed',
   signature: [{
     name: 'Geometry',
-    types: ['linestring', 'polygon', 'multilinestring', 'multipolygon'],
+    types: ['line', 'polygon', 'multiline', 'multipolygon'],
     required: true
   }],
-  returns: ['multilinestring', 'multipolygon'],
+  returns: ['multiline', 'multipolygon'],
   execute: geometry => {
     geometry = geometry.geometry || geometry;
     if (!geometry.type) throw new Error('type is required');
@@ -396,7 +396,7 @@ const createLineString = exports.createLineString = {
     types: ['number'],
     required: true
   }],
-  returns: 'linestring',
+  returns: 'line',
   execute: (startLon, startLat, endLon, endLat) => ({
     type: 'LineString',
     coordinates: [[startLon, startLat], [endLon, endLat]]
