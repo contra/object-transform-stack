@@ -8,6 +8,8 @@ import featuresExpected from './uas-features-expected'
 import featuresExpectedDepthLimited from './uas-features-expected-depth-limit'
 import featuresExpectedArrayLimited from './uas-features-expected-array-limit'
 import { transform, paths, analyze } from '../src'
+import { slug, guid } from '../src/presets/transforms'
+import * as types from '../src/presets/types'
 
 const basicTransforms = {
   uppercase: {
@@ -82,7 +84,9 @@ const basicTransforms = {
       new Promise((resolve) =>
         setTimeout(() => resolve(a + b), 500)
       )
-  }
+  },
+  slug,
+  guid
 }
 
 describe('transform', () => {
@@ -214,6 +218,25 @@ describe('transform', () => {
     }
     const res = await transform(stack, { zone: uas.features[0].geometry })
     should.exist(res.area)
+  })
+  it('should transform spat functions', async () => {
+    const stack = {
+      id: {
+        transform: 'slug',
+        arguments: [
+          {
+            transform: 'guid',
+            arguments: [ { field: 'id' }, { field: 'otherId' } ]
+          }
+        ]
+      }
+    }
+    const input = {
+      id: '124',
+      otherId: '432'
+    }
+    const res = await transform(stack, input, { transforms: basicTransforms, types })
+    should.exist(res.id)
   })
   it('should error with invalid transform values', async () => {
     const stack = {

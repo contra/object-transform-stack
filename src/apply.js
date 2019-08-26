@@ -48,7 +48,7 @@ const resolveTransform = async (value, inp, opt) => {
     if (transform.splat.required > existingArgs.length) {
       skip = true
     }
-    value.arguments.forEach((arg) => {
+    existingArgs.forEach((arg) => {
       validateArgumentTypes(transform, transform.splat, arg, opt.types)
     })
   }
