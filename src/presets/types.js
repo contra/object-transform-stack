@@ -1,4 +1,4 @@
-import isObject from 'is-plain-object'
+import isObject from 'is-plain-obj'
 import isNumber from 'is-number'
 import isDate from 'is-date-like'
 

@@ -1,5 +1,5 @@
 import dot from 'dot-prop'
-import isObject from 'is-plain-object'
+import isObject from 'is-plain-obj'
 import getTypes from './getTypes'
 import * as typeDefs from './presets/types'
 import * as transformDefs from './presets/transforms'

@@ -2,7 +2,7 @@ import forEach from 'lodash.foreach'
 import mergeWith from 'lodash.mergewith'
 import union from 'lodash.union'
 import sort from 'lodash.sortby'
-import isObject from 'is-plain-object'
+import isObject from 'is-plain-obj'
 import getTypes from './getTypes'
 import * as typeDefs from './presets/types'
 

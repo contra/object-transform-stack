@@ -7,9 +7,9 @@ var _dotProp = require('dot-prop');
 
 var _dotProp2 = _interopRequireDefault(_dotProp);
 
-var _isPlainObject = require('is-plain-object');
+var _isPlainObj = require('is-plain-obj');
 
-var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
+var _isPlainObj2 = _interopRequireDefault(_isPlainObj);
 
 var _getTypes = require('./getTypes');
 
@@ -27,7 +27,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const isValueObject = v => (0, _isPlainObject2.default)(v) && (v.field || v.transform);
+const isValueObject = v => (0, _isPlainObj2.default)(v) && (v.field || v.transform);
 
 const validateArgumentTypes = (transform, sig, arg, types) => {
   if (sig.types === 'any') return true; // allows anything

@@ -3,9 +3,9 @@
 exports.__esModule = true;
 exports.multiline = exports.line = exports.multipolygon = exports.polygon = exports.point = exports.date = exports.object = exports.array = exports.boolean = exports.string = exports.number = undefined;
 
-var _isPlainObject = require('is-plain-object');
+var _isPlainObj = require('is-plain-obj');
 
-var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
+var _isPlainObj2 = _interopRequireDefault(_isPlainObj);
 
 var _isNumber = require('is-number');
 
@@ -35,7 +35,7 @@ const array = exports.array = {
 };
 const object = exports.object = {
   name: 'Map',
-  check: v => (0, _isPlainObject2.default)(v)
+  check: v => (0, _isPlainObj2.default)(v)
 };
 const date = exports.date = {
   name: 'Date/Time',

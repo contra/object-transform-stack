@@ -19,9 +19,9 @@ var _lodash7 = require('lodash.sortby');
 
 var _lodash8 = _interopRequireDefault(_lodash7);
 
-var _isPlainObject = require('is-plain-object');
+var _isPlainObj = require('is-plain-obj');
 
-var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
+var _isPlainObj2 = _interopRequireDefault(_isPlainObj);
 
 var _getTypes = require('./getTypes');
 
@@ -44,7 +44,7 @@ const getPaths = (o, { depthLimit, arrayLimit } = {}) => {
       if (depthLimit && keys.length >= depthLimit) return;
       keys.push(String(key).replace(/\./g, '\\.'));
       out[keys.join('.')] = v;
-      if (Array.isArray(v) || (0, _isPlainObject2.default)(v)) visit(v, keys);
+      if (Array.isArray(v) || (0, _isPlainObj2.default)(v)) visit(v, keys);
       keys.pop();
     });
   };
