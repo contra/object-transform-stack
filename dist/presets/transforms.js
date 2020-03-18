@@ -1,7 +1,7 @@
 'use strict';
 
 exports.__esModule = true;
-exports.createLineString = exports.createPoint = exports.createArray = exports.createString = exports.creatBoolean = exports.ensureMulti = exports.simplifyGeometry = exports.join = exports.concatenate = exports.flatten = exports.compact = exports.subtract = exports.add = exports.convert = exports.split = exports.slug = exports.guid = exports.capitalizeWords = exports.capitalize = exports.phone = exports.normalize = undefined;
+exports.createLineString = exports.createPoint = exports.createArray = exports.createNumber = exports.createString = exports.creatBoolean = exports.ensureMulti = exports.simplifyGeometry = exports.join = exports.concatenate = exports.flatten = exports.compact = exports.subtract = exports.add = exports.convert = exports.split = exports.slug = exports.guid = exports.capitalizeWords = exports.capitalize = exports.phone = exports.normalize = undefined;
 
 var _phone = require('phone');
 
@@ -343,6 +343,18 @@ const createString = exports.createString = {
     if (typeof v === 'object') return JSON.stringify(v);
     return String(v);
   }
+};
+
+const createNumber = exports.createNumber = {
+  name: 'Create Number',
+  notes: 'Converts text to a number',
+  signature: [{
+    name: 'Value',
+    types: 'text',
+    required: true
+  }],
+  returns: 'number',
+  execute: v => parseFloat(v.replace(/[^\d.-]/g, ''))
 };
 
 const createArray = exports.createArray = {

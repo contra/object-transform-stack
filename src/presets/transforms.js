@@ -350,6 +350,21 @@ export const createString = {
   }
 }
 
+export const createNumber = {
+  name: 'Create Number',
+  notes: 'Converts text to a number',
+  signature: [
+    {
+      name: 'Value',
+      types: 'text',
+      required: true
+    }
+  ],
+  returns: 'number',
+  execute: (v) =>
+    parseFloat(v.replace(/[^\d.-]/g, ''))
+}
+
 export const createArray = {
   name: 'Create List',
   notes: 'Constructs a list from a number of items',

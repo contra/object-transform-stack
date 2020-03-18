@@ -219,7 +219,7 @@ describe('transform', () => {
     const res = await transform(stack, { zone: uas.features[0].geometry })
     should.exist(res.area)
   })
-  it('should transform spat functions', async () => {
+  it('should transform splat functions', async () => {
     const stack = {
       id: {
         transform: 'slug',
