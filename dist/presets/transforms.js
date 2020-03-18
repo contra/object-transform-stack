@@ -347,14 +347,14 @@ const createString = exports.createString = {
 
 const createNumber = exports.createNumber = {
   name: 'Create Number',
-  notes: 'Converts text to a number',
+  notes: 'Converts any value to a number',
   signature: [{
     name: 'Value',
-    types: 'text',
+    types: 'any',
     required: true
   }],
   returns: 'number',
-  execute: v => parseFloat(v.replace(/[^\d.-]/g, ''))
+  execute: v => parseFloat(createString.execute(v).replace(/[^\d.-]/g, ''))
 };
 
 const createArray = exports.createArray = {
