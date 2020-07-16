@@ -62,7 +62,7 @@ const resolveFrom = async (value, inp, opt) => {
       : dot.get(inp, value.field)
     : value
 
-  if (v == null && typeof value.defaultValue !== 'undefined') v = value.defaultValue
+  if (v == null && typeof value.defaultValue !== 'undefined') v = await resolveFrom(value.defaultValue, inp, opt)
   if (opt.strict && typeof v === 'undefined') v = null
   return v
 }

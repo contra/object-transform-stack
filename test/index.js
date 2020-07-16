@@ -85,6 +85,24 @@ const basicTransforms = {
         setTimeout(() => resolve(a + b), 500)
       )
   },
+  createString: {
+    name: 'Create Text',
+    signature: [
+      {
+        name: 'Value',
+        types: 'any',
+        required: true
+      }
+    ],
+    returns: 'string',
+    execute: (v) => {
+      if (typeof v === 'string') return v // already text
+      if (Array.isArray(v)) return v.join(', ')
+      if (v instanceof Date) return v.toISOString()
+      if (typeof v === 'object') return JSON.stringify(v)
+      return String(v)
+    }
+  },
   slug,
   guid
 }
@@ -165,6 +183,22 @@ describe('transform', () => {
     }
     const res = await transform(stack, { a: 'abc' }, { transforms: basicTransforms })
     should(res).eql({ b: 'XYZ' })
+  })
+  it('should work with a basic transform and defaultValue that is another transform', async () => {
+    const stack = {
+      'b': {
+        transform: 'uppercase',
+        defaultValue: {
+          transform: 'createString',
+          arguments: [
+            123
+          ]
+        },
+        arguments: [ { field: 'z' } ]
+      }
+    }
+    const res = await transform(stack, { a: 'abc' }, { transforms: basicTransforms })
+    should(res).eql({ b: '123' })
   })
   it('should work with nested transforms', async () => {
     const stack = {
