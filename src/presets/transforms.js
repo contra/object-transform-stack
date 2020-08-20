@@ -365,6 +365,22 @@ export const createNumber = {
     parseFloat(v.replace(/[^\d.-]/g, ''))
 }
 
+export const createDate = {
+  name: 'Create Date',
+  notes: 'Converts text or a number to a date',
+  signature: [
+    {
+      name: 'Value',
+      types: [ 'string', 'number' ],
+      required: true
+    }
+  ],
+  returns: 'date',
+  execute: (v) =>
+    new Date(v)
+}
+
+
 export const createArray = {
   name: 'Create List',
   notes: 'Constructs a list from a number of items',
