@@ -297,7 +297,7 @@ const centroid = {
     types: ['line', 'polygon', 'multiline', 'multipolygon'],
     required: true
   }],
-  returns: ['multiline', 'multipolygon'],
+  returns: ['point'],
   execute: geometry => {
     geometry = geometry.geometry || geometry;
     if (geometry == null) return;
