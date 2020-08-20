@@ -7,7 +7,7 @@ import isEqual from 'lodash.isequal'
 import _flatten from 'lodash.flatten'
 import _concat from 'lodash.concat'
 import _compact from 'lodash.compact'
-import { simplify, truncate, cleanCoords } from '@turf/turf'
+import { simplify, truncate, centroid as baseCentroid, cleanCoords } from '@turf/turf'
 
 // TODO:
 // tz, geo.locate, geo.search, geo.intersection, geo.snap, geo.navigate, geo.snap, geo.tz
@@ -285,6 +285,31 @@ export const simplifyGeometry = {
       type,
       ...rest,
       coordinates: res.coordinates
+    }
+  }
+}
+
+export const centroid = {
+  name: 'Centroid',
+  notes: 'Returns the centroid point of a geometry.',
+  signature: [
+    {
+      name: 'Geometry',
+      types: [ 'line', 'polygon', 'multiline', 'multipolygon' ],
+      required: true
+    }
+  ],
+  returns: [ 'multiline', 'multipolygon' ],
+  execute: (geometry) => {
+    geometry = geometry.geometry || geometry
+    if (geometry == null) return
+    const { type, coordinates, ...rest } = geometry
+    if (!type) throw new Error('type is required')
+    if (!coordinates) throw new Error('coordinates is required')
+    const res = baseCentroid(geometry).geometry
+    return {
+      ...res,
+      ...rest
     }
   }
 }

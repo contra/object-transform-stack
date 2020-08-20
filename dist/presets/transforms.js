@@ -1,7 +1,7 @@
 'use strict';
 
 exports.__esModule = true;
-exports.createLineString = exports.createPoint = exports.createArray = exports.createDate = exports.createNumber = exports.createString = exports.creatBoolean = exports.ensureMulti = exports.simplifyGeometry = exports.join = exports.concatenate = exports.flatten = exports.compact = exports.subtract = exports.add = exports.convert = exports.split = exports.slug = exports.guid = exports.capitalizeWords = exports.capitalize = exports.phone = exports.normalize = undefined;
+exports.createLineString = exports.createPoint = exports.createArray = exports.createDate = exports.createNumber = exports.createString = exports.creatBoolean = exports.ensureMulti = exports.centroid = exports.simplifyGeometry = exports.join = exports.concatenate = exports.flatten = exports.compact = exports.subtract = exports.add = exports.convert = exports.split = exports.slug = exports.guid = exports.capitalizeWords = exports.capitalize = exports.phone = exports.normalize = undefined;
 
 var _phone = require('phone');
 
@@ -289,6 +289,28 @@ const join = exports.join = {
 };
 
 exports.simplifyGeometry = simplifyGeometry;
+const centroid = {
+  name: 'Centroid',
+  notes: 'Returns the centroid point of a geometry.',
+  signature: [{
+    name: 'Geometry',
+    types: ['line', 'polygon', 'multiline', 'multipolygon'],
+    required: true
+  }],
+  returns: ['multiline', 'multipolygon'],
+  execute: geometry => {
+    geometry = geometry.geometry || geometry;
+    if (geometry == null) return;
+    const { type, coordinates } = geometry,
+          rest = _objectWithoutProperties(geometry, ['type', 'coordinates']);
+    if (!type) throw new Error('type is required');
+    if (!coordinates) throw new Error('coordinates is required');
+    const res = (0, _turf.centroid)(geometry).geometry;
+    return Object.assign({}, res, rest);
+  }
+};
+
+exports.centroid = centroid;
 const ensureMulti = {
   name: 'Ensure Multi',
   notes: 'Converts any geometry to it\'s corresponding Multi type if needed',
