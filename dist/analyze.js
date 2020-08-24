@@ -3,13 +3,7 @@
 exports.__esModule = true;
 exports.analyze = exports.paths = void 0;
 
-var _lodash = _interopRequireDefault(require("lodash.foreach"));
-
-var _lodash2 = _interopRequireDefault(require("lodash.mergewith"));
-
-var _lodash3 = _interopRequireDefault(require("lodash.union"));
-
-var _lodash4 = _interopRequireDefault(require("lodash.sortby"));
+var _lodash = require("lodash");
 
 var _isPlainObj = _interopRequireDefault(require("is-plain-obj"));
 
@@ -31,7 +25,7 @@ const getPaths = (o, {
 
   const visit = (obj, keys = []) => {
     const isArray = Array.isArray(obj);
-    (0, _lodash.default)(obj, (v, key) => {
+    (0, _lodash.forEach)(obj, (v, key) => {
       if (isArray && key > arrayLimit) return; // hit our limit
 
       if (depthLimit && keys.length >= depthLimit) return;
@@ -83,12 +77,12 @@ const analyze = (inp, {
     }, {});
   };
 
-  const merger = (prev, src) => (0, _lodash3.default)(prev, src);
+  const merger = (prev, src) => (0, _lodash.union)(prev, src);
 
-  const all = (0, _lodash2.default)(...inp.map(getPathsAndTypes), merger);
+  const all = (0, _lodash.mergeWith)(...inp.map(getPathsAndTypes), merger);
   return Object.entries(all).map(([path, types]) => ({
     path,
-    types: (0, _lodash4.default)(types)
+    types: (0, _lodash.sortBy)(types)
   }));
 };
 

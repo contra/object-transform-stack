@@ -3,11 +3,9 @@
 exports.__esModule = true;
 exports.default = void 0;
 
-var _lodash = _interopRequireDefault(require("lodash.sortby"));
+var _lodash = require("lodash");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _default = (v, types) => (0, _lodash.default)(Object.entries(types).reduce((prev, [type, fn]) => {
+var _default = (v, types) => (0, _lodash.sortBy)(Object.entries(types).reduce((prev, [type, fn]) => {
   if (!fn || typeof fn.check !== 'function') return prev;
   if (fn.check(v)) prev.push(type);
   return prev;

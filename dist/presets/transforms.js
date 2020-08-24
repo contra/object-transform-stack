@@ -13,13 +13,7 @@ var _capitalize = _interopRequireDefault(require("capitalize"));
 
 var _convertUnits = _interopRequireDefault(require("convert-units"));
 
-var _lodash = _interopRequireDefault(require("lodash.isequal"));
-
-var _lodash2 = _interopRequireDefault(require("lodash.flatten"));
-
-var _lodash3 = _interopRequireDefault(require("lodash.concat"));
-
-var _lodash4 = _interopRequireDefault(require("lodash.compact"));
+var _lodash = require("lodash");
 
 var _turf = require("@turf/turf");
 
@@ -211,7 +205,7 @@ const compact = {
     required: true
   }],
   returns: 'array',
-  execute: v => (0, _lodash4.default)(v)
+  execute: v => (0, _lodash.compact)(v)
 };
 exports.compact = compact;
 const flatten = {
@@ -223,7 +217,7 @@ const flatten = {
     required: true
   }],
   returns: 'array',
-  execute: v => (0, _lodash2.default)(v)
+  execute: v => (0, _lodash.flatten)(v)
 };
 exports.flatten = flatten;
 const concatenate = {
@@ -235,7 +229,7 @@ const concatenate = {
     required: 2
   },
   returns: 'array',
-  execute: (...v) => (0, _lodash3.default)(...v)
+  execute: (...v) => (0, _lodash.concat)(...v)
 };
 exports.concatenate = concatenate;
 const join = {
@@ -281,7 +275,7 @@ const simplifyGeometry = {
     if (!type) throw new Error('type is required');
     if (!coordinates) throw new Error('coordinates is required');
 
-    if (type === 'LineString' && coordinates.length === 2 && (0, _lodash.default)(coordinates[0], coordinates[1])) {
+    if (type === 'LineString' && coordinates.length === 2 && (0, _lodash.isEqual)(coordinates[0], coordinates[1])) {
       throw new Error('Invalid LineString! Only two coordinates that are identical.');
     }
 
