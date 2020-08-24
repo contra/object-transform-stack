@@ -165,7 +165,7 @@ describe('transform', () => {
   })
   it('should work with a basic transform and defaultValue on field', async () => {
     const stack = {
-      'b': {
+      b: {
         transform: 'uppercase',
         arguments: [ { field: 'z', defaultValue: 'abc' } ]
       }
@@ -175,7 +175,7 @@ describe('transform', () => {
   })
   it('should work with a basic transform and defaultValue on transform', async () => {
     const stack = {
-      'b': {
+      b: {
         transform: 'uppercase',
         defaultValue: 'XYZ',
         arguments: [ { field: 'z' } ]
@@ -186,7 +186,7 @@ describe('transform', () => {
   })
   it('should work with a basic transform and defaultValue that is another transform', async () => {
     const stack = {
-      'b': {
+      b: {
         transform: 'uppercase',
         defaultValue: {
           transform: 'createString',
@@ -202,7 +202,7 @@ describe('transform', () => {
   })
   it('should work with nested transforms', async () => {
     const stack = {
-      'b': {
+      b: {
         transform: 'uppercase',
         arguments: [
           {
@@ -217,7 +217,7 @@ describe('transform', () => {
   })
   it('should work with flat value transforms', async () => {
     const stack = {
-      'b': {
+      b: {
         transform: 'add',
         arguments: [
           { field: 'a' },
@@ -230,7 +230,7 @@ describe('transform', () => {
   })
   it('should work with async transforms', async () => {
     const stack = {
-      'b': {
+      b: {
         transform: 'sleepAdd',
         arguments: [
           { field: 'a' },
@@ -274,7 +274,7 @@ describe('transform', () => {
   })
   it('should error with invalid transform values', async () => {
     const stack = {
-      'b': {
+      b: {
         transform: 'uppercase',
         arguments: [
           {

@@ -3,10 +3,7 @@ import aguid from 'aguid'
 import slugify from '@sindresorhus/slugify'
 import caps from 'capitalize'
 import convertUnits from 'convert-units'
-import isEqual from 'lodash.isequal'
-import _flatten from 'lodash.flatten'
-import _concat from 'lodash.concat'
-import _compact from 'lodash.compact'
+import { isEqual, flatten as _flatten, concat as _concat, compact as _compact } from 'lodash'
 import { simplify, truncate, centroid as baseCentroid, cleanCoords } from '@turf/turf'
 
 // TODO:

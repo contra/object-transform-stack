@@ -1,60 +1,49 @@
-'use strict';
+"use strict";
 
 exports.__esModule = true;
-exports.createLineString = exports.createPoint = exports.createArray = exports.createDate = exports.createNumber = exports.createString = exports.creatBoolean = exports.ensureMulti = exports.centroid = exports.simplifyGeometry = exports.join = exports.concatenate = exports.flatten = exports.compact = exports.subtract = exports.add = exports.convert = exports.split = exports.slug = exports.guid = exports.capitalizeWords = exports.capitalize = exports.phone = exports.normalize = undefined;
+exports.createLineString = exports.createPoint = exports.createArray = exports.createDate = exports.createNumber = exports.createString = exports.creatBoolean = exports.ensureMulti = exports.centroid = exports.simplifyGeometry = exports.join = exports.concatenate = exports.flatten = exports.compact = exports.subtract = exports.add = exports.convert = exports.split = exports.slug = exports.guid = exports.capitalizeWords = exports.capitalize = exports.phone = exports.normalize = void 0;
 
-var _phone = require('phone');
+var _phone = _interopRequireDefault(require("phone"));
 
-var _phone2 = _interopRequireDefault(_phone);
+var _aguid = _interopRequireDefault(require("aguid"));
 
-var _aguid = require('aguid');
+var _slugify = _interopRequireDefault(require("@sindresorhus/slugify"));
 
-var _aguid2 = _interopRequireDefault(_aguid);
+var _capitalize = _interopRequireDefault(require("capitalize"));
 
-var _slugify = require('@sindresorhus/slugify');
+var _convertUnits = _interopRequireDefault(require("convert-units"));
 
-var _slugify2 = _interopRequireDefault(_slugify);
+var _lodash = _interopRequireDefault(require("lodash.isequal"));
 
-var _capitalize = require('capitalize');
+var _lodash2 = _interopRequireDefault(require("lodash.flatten"));
 
-var _capitalize2 = _interopRequireDefault(_capitalize);
+var _lodash3 = _interopRequireDefault(require("lodash.concat"));
 
-var _convertUnits = require('convert-units');
+var _lodash4 = _interopRequireDefault(require("lodash.compact"));
 
-var _convertUnits2 = _interopRequireDefault(_convertUnits);
-
-var _lodash = require('lodash.isequal');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _lodash3 = require('lodash.flatten');
-
-var _lodash4 = _interopRequireDefault(_lodash3);
-
-var _lodash5 = require('lodash.concat');
-
-var _lodash6 = _interopRequireDefault(_lodash5);
-
-var _lodash7 = require('lodash.compact');
-
-var _lodash8 = _interopRequireDefault(_lodash7);
-
-var _turf = require('@turf/turf');
+var _turf = require("@turf/turf");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
+
+function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
 
 // TODO:
 // tz, geo.locate, geo.search, geo.intersection, geo.snap, geo.navigate, geo.snap, geo.tz
-const convertPossibilities = (0, _convertUnits2.default)().list().map(i => ({
+const convertPossibilities = (0, _convertUnits.default)().list().map(i => ({
   value: i.abbr,
   label: i.singular,
   group: [i.measure, i.system]
-}));
+})); // Strings
 
-// Strings
-const normalize = exports.normalize = {
+const normalize = {
   name: 'Normalize',
   notes: 'Removes excess whitespace and lowercases text',
   signature: [{
@@ -69,8 +58,8 @@ const normalize = exports.normalize = {
     return o.replace(/\s\s+/g, ' ').toLowerCase();
   }
 };
-
-const phone = exports.phone = {
+exports.normalize = normalize;
+const phone = {
   name: 'Phone Number',
   notes: 'Reformats as a standard international phone number',
   signature: [{
@@ -83,13 +72,13 @@ const phone = exports.phone = {
   }],
   returns: 'string',
   execute: (v, country = 'USA') => {
-    const res = (0, _phone2.default)(String(v), country);
+    const res = (0, _phone.default)(String(v), country);
     if (!res || res.length === 0) return null;
     return res[0];
   }
 };
-
-const capitalize = exports.capitalize = {
+exports.phone = phone;
+const capitalize = {
   name: 'Capitalize',
   notes: 'Capitalizes the first word in every sentence',
   signature: [{
@@ -98,10 +87,10 @@ const capitalize = exports.capitalize = {
     required: true
   }],
   returns: 'string',
-  execute: v => (0, _capitalize2.default)(v)
+  execute: v => (0, _capitalize.default)(v)
 };
-
-const capitalizeWords = exports.capitalizeWords = {
+exports.capitalize = capitalize;
+const capitalizeWords = {
   name: 'Capitalize Words',
   notes: 'Capitalizes the first letter of every word',
   signature: [{
@@ -110,10 +99,10 @@ const capitalizeWords = exports.capitalizeWords = {
     required: true
   }],
   returns: 'string',
-  execute: v => _capitalize2.default.words(v)
+  execute: v => _capitalize.default.words(v)
 };
-
-const guid = exports.guid = {
+exports.capitalizeWords = capitalizeWords;
+const guid = {
   name: 'Unique ID',
   notes: 'Combines multiple semi-unique values into a Globally Unique ID (GUID)',
   splat: {
@@ -125,11 +114,11 @@ const guid = exports.guid = {
   execute: (...v) => {
     const args = v.filter(i => i != null);
     if (args.length === 0) return;
-    return (0, _aguid2.default)(args.join('-'));
+    return (0, _aguid.default)(args.join('-'));
   }
 };
-
-const slug = exports.slug = {
+exports.guid = guid;
+const slug = {
   name: 'Slug',
   notes: 'Combines multiple semi-unique values into a human readable ID',
   splat: {
@@ -141,10 +130,11 @@ const slug = exports.slug = {
   execute: (...v) => {
     const args = v.filter(i => i != null).map(v => v instanceof Date ? v.toLocaleDateString() : v);
     if (args.length === 0) return;
-    return (0, _slugify2.default)(args.join(' ')).toLowerCase();
+    return (0, _slugify.default)(args.join(' ')).toLowerCase();
   }
 };
-const split = exports.split = {
+exports.slug = slug;
+const split = {
   name: 'Split',
   notes: 'Splits a string by a separator into a list',
   signature: [{
@@ -157,9 +147,10 @@ const split = exports.split = {
   }],
   returns: 'array',
   execute: (v, sep = ', ') => v.split(sep)
+}; // Numbers
 
-  // Numbers
-};const convert = exports.convert = {
+exports.split = split;
+const convert = {
   name: 'Convert',
   notes: 'Converts one unit to another',
   signature: [{
@@ -182,10 +173,11 @@ const split = exports.split = {
     if (typeof v === 'string') v = parseFloat(v);
     if (isNaN(v)) return;
     if (typeof v !== 'number') return;
-    return (0, _convertUnits2.default)(v).from(from).to(to);
+    return (0, _convertUnits.default)(v).from(from).to(to);
   }
 };
-const add = exports.add = {
+exports.convert = convert;
+const add = {
   name: 'Add',
   notes: 'Applies addition to multiple numbers',
   splat: {
@@ -196,7 +188,8 @@ const add = exports.add = {
   returns: 'number',
   execute: (...a) => a.reduce((p, i) => p + i, 0)
 };
-const subtract = exports.subtract = {
+exports.add = add;
+const subtract = {
   name: 'Subtract',
   notes: 'Applies subtraction to multiple numbers',
   splat: {
@@ -206,9 +199,10 @@ const subtract = exports.subtract = {
   },
   returns: 'number',
   execute: (...a) => a.reduce((p, i) => p - i, 0)
+}; // Arrays
 
-  // Arrays
-};const compact = exports.compact = {
+exports.subtract = subtract;
+const compact = {
   name: 'Compact',
   notes: 'Removes all empty or false values from a list',
   signature: [{
@@ -217,9 +211,10 @@ const subtract = exports.subtract = {
     required: true
   }],
   returns: 'array',
-  execute: v => (0, _lodash8.default)(v)
+  execute: v => (0, _lodash4.default)(v)
 };
-const flatten = exports.flatten = {
+exports.compact = compact;
+const flatten = {
   name: 'Flatten',
   notes: 'Removes a level of createLineString from a list',
   signature: [{
@@ -228,9 +223,10 @@ const flatten = exports.flatten = {
     required: true
   }],
   returns: 'array',
-  execute: v => (0, _lodash4.default)(v)
+  execute: v => (0, _lodash2.default)(v)
 };
-const concatenate = exports.concatenate = {
+exports.flatten = flatten;
+const concatenate = {
   name: 'Concatenate',
   notes: 'Merges multiple lists together',
   splat: {
@@ -239,9 +235,10 @@ const concatenate = exports.concatenate = {
     required: 2
   },
   returns: 'array',
-  execute: (...v) => (0, _lodash6.default)(...v)
+  execute: (...v) => (0, _lodash3.default)(...v)
 };
-const join = exports.join = {
+exports.concatenate = concatenate;
+const join = {
   name: 'Join',
   notes: 'Converts all elements in a list to a string joined by a separator',
   signature: [{
@@ -254,9 +251,10 @@ const join = exports.join = {
   }],
   returns: 'string',
   execute: (v, sep = ', ') => v.join(sep)
+}; // Geometries
 
-  // Geometries
-};const simplifyGeometry = {
+exports.join = join;
+const simplifyGeometry = {
   name: 'Simplify',
   notes: 'Removes excess precision and simplifies the shape of any geometry',
   signature: [{
@@ -270,24 +268,36 @@ const join = exports.join = {
   returns: ['point', 'line', 'polygon', 'multiline', 'multipolygon'],
   execute: (geometry, tolerance = 1) => {
     const actualTolerance = tolerance * 0.00001; // tolerance arg is in meters
+
     geometry = geometry.geometry || geometry;
     if (geometry == null) return;
-    const { type, coordinates } = geometry,
-          rest = _objectWithoutProperties(geometry, ['type', 'coordinates']);
+
+    const {
+      type,
+      coordinates
+    } = geometry,
+          rest = _objectWithoutProperties(geometry, ["type", "coordinates"]);
+
     if (!type) throw new Error('type is required');
     if (!coordinates) throw new Error('coordinates is required');
-    if (type === 'LineString' && coordinates.length === 2 && (0, _lodash2.default)(coordinates[0], coordinates[1])) {
+
+    if (type === 'LineString' && coordinates.length === 2 && (0, _lodash.default)(coordinates[0], coordinates[1])) {
       throw new Error('Invalid LineString! Only two coordinates that are identical.');
     }
-    const res = (0, _turf.simplify)((0, _turf.cleanCoords)((0, _turf.truncate)(geometry, { precision: 6, coordinates: 3 })), { tolerance: actualTolerance });
-    return Object.assign({
+
+    const res = (0, _turf.simplify)((0, _turf.cleanCoords)((0, _turf.truncate)(geometry, {
+      precision: 6,
+      coordinates: 3
+    })), {
+      tolerance: actualTolerance
+    });
+    return _objectSpread(_objectSpread({
       type
-    }, rest, {
+    }, rest), {}, {
       coordinates: res.coordinates
     });
   }
 };
-
 exports.simplifyGeometry = simplifyGeometry;
 const centroid = {
   name: 'Centroid',
@@ -301,15 +311,19 @@ const centroid = {
   execute: geometry => {
     geometry = geometry.geometry || geometry;
     if (geometry == null) return;
-    const { type, coordinates } = geometry,
-          rest = _objectWithoutProperties(geometry, ['type', 'coordinates']);
+
+    const {
+      type,
+      coordinates
+    } = geometry,
+          rest = _objectWithoutProperties(geometry, ["type", "coordinates"]);
+
     if (!type) throw new Error('type is required');
     if (!coordinates) throw new Error('coordinates is required');
     const res = (0, _turf.centroid)(geometry).geometry;
-    return Object.assign({}, res, rest);
+    return _objectSpread(_objectSpread({}, res), rest);
   }
 };
-
 exports.centroid = centroid;
 const ensureMulti = {
   name: 'Ensure Multi',
@@ -326,18 +340,23 @@ const ensureMulti = {
     if (!geometry.coordinates) throw new Error('coordinates is required');
     const isSingle = geometry.type.indexOf('Multi') !== 0;
     if (!isSingle) return geometry; // is a multi, return early
-    const { type, coordinates } = geometry,
-          rest = _objectWithoutProperties(geometry, ['type', 'coordinates']);
-    return Object.assign({
+
+    const {
+      type,
+      coordinates
+    } = geometry,
+          rest = _objectWithoutProperties(geometry, ["type", "coordinates"]);
+
+    return _objectSpread(_objectSpread({
       type: `Multi${type}`
-    }, rest, {
+    }, rest), {}, {
       coordinates: [coordinates]
     });
   }
+}; // Type casting/creation
 
-  // Type casting/creation
-};exports.ensureMulti = ensureMulti;
-const creatBoolean = exports.creatBoolean = {
+exports.ensureMulti = ensureMulti;
+const creatBoolean = {
   name: 'Create Boolean (True/False)',
   notes: 'Converts any value to a boolean',
   signature: [{
@@ -348,8 +367,8 @@ const creatBoolean = exports.creatBoolean = {
   returns: 'boolean',
   execute: v => Boolean(v)
 };
-
-const createString = exports.createString = {
+exports.creatBoolean = creatBoolean;
+const createString = {
   name: 'Create Text',
   notes: 'Converts any value to text',
   signature: [{
@@ -360,14 +379,15 @@ const createString = exports.createString = {
   returns: 'string',
   execute: v => {
     if (typeof v === 'string') return v; // already text
+
     if (Array.isArray(v)) return v.join(', ');
     if (v instanceof Date) return v.toISOString();
     if (typeof v === 'object') return JSON.stringify(v);
     return String(v);
   }
 };
-
-const createNumber = exports.createNumber = {
+exports.createString = createString;
+const createNumber = {
   name: 'Create Number',
   notes: 'Converts text to a number',
   signature: [{
@@ -378,8 +398,8 @@ const createNumber = exports.createNumber = {
   returns: 'number',
   execute: v => parseFloat(v.replace(/[^\d.-]/g, ''))
 };
-
-const createDate = exports.createDate = {
+exports.createNumber = createNumber;
+const createDate = {
   name: 'Create Date',
   notes: 'Converts text or a number to a date',
   signature: [{
@@ -390,8 +410,8 @@ const createDate = exports.createDate = {
   returns: 'date',
   execute: v => new Date(v)
 };
-
-const createArray = exports.createArray = {
+exports.createDate = createDate;
+const createArray = {
   name: 'Create List',
   notes: 'Constructs a list from a number of items',
   splat: {
@@ -402,8 +422,8 @@ const createArray = exports.createArray = {
   returns: 'array',
   execute: (...a) => a
 };
-
-const createPoint = exports.createPoint = {
+exports.createArray = createArray;
+const createPoint = {
   name: 'Create Point',
   notes: 'Constructs a GeoJSON Point from a coordinate',
   signature: [{
@@ -421,8 +441,8 @@ const createPoint = exports.createPoint = {
     coordinates: [lon, lat]
   })
 };
-
-const createLineString = exports.createLineString = {
+exports.createPoint = createPoint;
+const createLineString = {
   name: 'Create LineString',
   notes: 'Constructs a GeoJSON LineString from start and end coordinates',
   signature: [{
@@ -448,3 +468,4 @@ const createLineString = exports.createLineString = {
     coordinates: [[startLon, startLat], [endLon, endLat]]
   })
 };
+exports.createLineString = createLineString;

@@ -1,63 +1,68 @@
-'use strict';
+"use strict";
 
 exports.__esModule = true;
-exports.multiline = exports.line = exports.multipolygon = exports.polygon = exports.point = exports.date = exports.object = exports.array = exports.boolean = exports.string = exports.number = undefined;
+exports.multiline = exports.line = exports.multipolygon = exports.polygon = exports.point = exports.date = exports.object = exports.array = exports.boolean = exports.string = exports.number = void 0;
 
-var _isPlainObj = require('is-plain-obj');
+var _isPlainObj = _interopRequireDefault(require("is-plain-obj"));
 
-var _isPlainObj2 = _interopRequireDefault(_isPlainObj);
+var _isNumber = _interopRequireDefault(require("is-number"));
 
-var _isNumber = require('is-number');
-
-var _isNumber2 = _interopRequireDefault(_isNumber);
-
-var _isDateLike = require('is-date-like');
-
-var _isDateLike2 = _interopRequireDefault(_isDateLike);
+var _isDateLike = _interopRequireDefault(require("is-date-like"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const number = exports.number = {
+const number = {
   name: 'Number',
-  check: v => (0, _isNumber2.default)(v)
+  check: v => (0, _isNumber.default)(v)
 };
-const string = exports.string = {
+exports.number = number;
+const string = {
   name: 'Text',
   check: v => typeof v === 'string'
 };
-const boolean = exports.boolean = {
+exports.string = string;
+const boolean = {
   name: 'True/False',
   check: v => typeof v === 'boolean'
 };
-const array = exports.array = {
+exports.boolean = boolean;
+const array = {
   name: 'List',
   check: v => Array.isArray(v)
 };
-const object = exports.object = {
+exports.array = array;
+const object = {
   name: 'Map',
-  check: v => (0, _isPlainObj2.default)(v)
+  check: v => (0, _isPlainObj.default)(v)
 };
-const date = exports.date = {
+exports.object = object;
+const date = {
   name: 'Date/Time',
-  check: v => (0, _isDateLike2.default)(v)
+  check: v => (0, _isDateLike.default)(v)
 };
-const point = exports.point = {
+exports.date = date;
+const point = {
   name: 'GeoJSON Point',
   check: v => object.check(v) && (v.type === 'Point' || v.type === 'Feature ' && v.geometry && v.geometry.type === 'Point')
 };
-const polygon = exports.polygon = {
+exports.point = point;
+const polygon = {
   name: 'GeoJSON Polygon',
   check: v => object.check(v) && (v.type === 'Polygon' || v.type === 'Feature ' && v.geometry && v.geometry.type === 'Polygon')
 };
-const multipolygon = exports.multipolygon = {
+exports.polygon = polygon;
+const multipolygon = {
   name: 'GeoJSON MultiPolygon',
   check: v => object.check(v) && (v.type === 'MultiPolygon' || v.type === 'Feature ' && v.geometry && v.geometry.type === 'MultiPolygon')
 };
-const line = exports.line = {
+exports.multipolygon = multipolygon;
+const line = {
   name: 'GeoJSON LineString',
   check: v => object.check(v) && (v.type === 'LineString' || v.type === 'Feature ' && v.geometry && v.geometry.type === 'LineString')
 };
-const multiline = exports.multiline = {
+exports.line = line;
+const multiline = {
   name: 'GeoJSON MultiLineString',
   check: v => object.check(v) && (v.type === 'MultiLineString' || v.type === 'Feature ' && v.geometry && v.geometry.type === 'MultiLineString')
 };
+exports.multiline = multiline;
