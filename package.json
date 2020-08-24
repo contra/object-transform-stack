@@ -1,6 +1,6 @@
 {
   "name": "object-transform-stack",
-  "version": "3.2.2",
+  "version": "3.2.3",
   "description": "Simple module to map one object to another using a stack of declarative pointers and transforms",
   "main": "dist/index.js",
   "keywords": [
@@ -39,7 +39,7 @@
     "@babel/register": "^7.10.5",
     "@stae/babel-node": "^1.0.3",
     "@stae/linters": "^1.0.1",
-    "eslint": "^6.0.0",
+    "eslint": "^7.0.0",
     "express": "^4.16.4",
     "mocha": "^8.0.0",
     "rimraf": "^3.0.0",
