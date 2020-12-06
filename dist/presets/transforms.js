@@ -19,16 +19,6 @@ var _turf = require("@turf/turf");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
-
-function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
-
 // TODO:
 // tz, geo.locate, geo.search, geo.intersection, geo.snap, geo.navigate, geo.snap, geo.tz
 const convertPossibilities = (0, _convertUnits.default)().list().map(i => ({
@@ -96,6 +86,11 @@ const capitalizeWords = {
   execute: v => _capitalize.default.words(v)
 };
 exports.capitalizeWords = capitalizeWords;
+
+function _ref(i) {
+  return i != null;
+}
+
 const guid = {
   name: 'Unique ID',
   notes: 'Combines multiple semi-unique values into a Globally Unique ID (GUID)',
@@ -106,12 +101,21 @@ const guid = {
   },
   returns: 'string',
   execute: (...v) => {
-    const args = v.filter(i => i != null);
+    const args = v.filter(_ref);
     if (args.length === 0) return;
     return (0, _aguid.default)(args.join('-'));
   }
 };
 exports.guid = guid;
+
+function _ref2(i) {
+  return i != null;
+}
+
+function _ref3(v) {
+  return v instanceof Date ? v.toLocaleDateString() : v;
+}
+
 const slug = {
   name: 'Slug',
   notes: 'Combines multiple semi-unique values into a human readable ID',
@@ -122,7 +126,7 @@ const slug = {
   },
   returns: 'string',
   execute: (...v) => {
-    const args = v.filter(i => i != null).map(v => v instanceof Date ? v.toLocaleDateString() : v);
+    const args = v.filter(_ref2).map(_ref3);
     if (args.length === 0) return;
     return (0, _slugify.default)(args.join(' ')).toLowerCase();
   }
@@ -171,6 +175,11 @@ const convert = {
   }
 };
 exports.convert = convert;
+
+function _ref4(p, i) {
+  return p + i;
+}
+
 const add = {
   name: 'Add',
   notes: 'Applies addition to multiple numbers',
@@ -180,9 +189,14 @@ const add = {
     required: 2
   },
   returns: 'number',
-  execute: (...a) => a.reduce((p, i) => p + i, 0)
+  execute: (...a) => a.reduce(_ref4, 0)
 };
 exports.add = add;
+
+function _ref5(p, i) {
+  return p - i;
+}
+
 const subtract = {
   name: 'Subtract',
   notes: 'Applies subtraction to multiple numbers',
@@ -192,7 +206,7 @@ const subtract = {
     required: 2
   },
   returns: 'number',
-  execute: (...a) => a.reduce((p, i) => p - i, 0)
+  execute: (...a) => a.reduce(_ref5, 0)
 }; // Arrays
 
 exports.subtract = subtract;
@@ -265,13 +279,11 @@ const simplifyGeometry = {
 
     geometry = geometry.geometry || geometry;
     if (geometry == null) return;
-
     const {
       type,
-      coordinates
-    } = geometry,
-          rest = _objectWithoutProperties(geometry, ["type", "coordinates"]);
-
+      coordinates,
+      ...rest
+    } = geometry;
     if (!type) throw new Error('type is required');
     if (!coordinates) throw new Error('coordinates is required');
 
@@ -285,11 +297,11 @@ const simplifyGeometry = {
     })), {
       tolerance: actualTolerance
     });
-    return _objectSpread(_objectSpread({
-      type
-    }, rest), {}, {
+    return {
+      type,
+      ...rest,
       coordinates: res.coordinates
-    });
+    };
   }
 };
 exports.simplifyGeometry = simplifyGeometry;
@@ -305,17 +317,17 @@ const centroid = {
   execute: geometry => {
     geometry = geometry.geometry || geometry;
     if (geometry == null) return;
-
     const {
       type,
-      coordinates
-    } = geometry,
-          rest = _objectWithoutProperties(geometry, ["type", "coordinates"]);
-
+      coordinates,
+      ...rest
+    } = geometry;
     if (!type) throw new Error('type is required');
     if (!coordinates) throw new Error('coordinates is required');
     const res = (0, _turf.centroid)(geometry).geometry;
-    return _objectSpread(_objectSpread({}, res), rest);
+    return { ...res,
+      ...rest
+    };
   }
 };
 exports.centroid = centroid;
@@ -337,15 +349,14 @@ const ensureMulti = {
 
     const {
       type,
-      coordinates
-    } = geometry,
-          rest = _objectWithoutProperties(geometry, ["type", "coordinates"]);
-
-    return _objectSpread(_objectSpread({
-      type: `Multi${type}`
-    }, rest), {}, {
+      coordinates,
+      ...rest
+    } = geometry;
+    return {
+      type: `Multi${type}`,
+      ...rest,
       coordinates: [coordinates]
-    });
+    };
   }
 }; // Type casting/creation
 

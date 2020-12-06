@@ -33,6 +33,10 @@ const validateArgumentTypes = (transform, sig, arg, types) => {
   return true;
 };
 
+function _ref2(v) {
+  return v != null;
+}
+
 const resolveTransform = async (value, inp, opt) => {
   const transform = opt.transforms[value.transform];
 
@@ -43,29 +47,33 @@ const resolveTransform = async (value, inp, opt) => {
   const resolvedArgs = value.arguments ? await Promise.all(value.arguments.map(async (a) => isValueObject(a) ? resolveFrom(a, inp, opt) : a)) : [];
   let skip = false;
 
+  function _ref(sig, idx) {
+    const arg = resolvedArgs[idx]; // if any required arg is missing, transform returns undefined
+
+    if (sig.required && arg == null) {
+      skip = true;
+      return;
+    }
+
+    validateArgumentTypes(transform, sig, arg, opt.types);
+  }
+
   if (transform.signature) {
-    transform.signature.forEach((sig, idx) => {
-      const arg = resolvedArgs[idx]; // if any required arg is missing, transform returns undefined
+    transform.signature.forEach(_ref);
+  }
 
-      if (sig.required && arg == null) {
-        skip = true;
-        return;
-      }
-
-      validateArgumentTypes(transform, sig, arg, opt.types);
-    });
+  function _ref3(arg) {
+    validateArgumentTypes(transform, transform.splat, arg, opt.types);
   }
 
   if (transform.splat) {
-    const existingArgs = resolvedArgs.filter(v => v != null); // if number of required args not present, transform returns undefined
+    const existingArgs = resolvedArgs.filter(_ref2); // if number of required args not present, transform returns undefined
 
     if (transform.splat.required > existingArgs.length) {
       skip = true;
     }
 
-    existingArgs.forEach(arg => {
-      validateArgumentTypes(transform, transform.splat, arg, opt.types);
-    });
+    existingArgs.forEach(_ref3);
   }
 
   return skip ? undefined : transform.execute(...resolvedArgs);

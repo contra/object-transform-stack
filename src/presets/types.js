@@ -2,6 +2,8 @@ import isObject from 'is-plain-obj'
 import isNumber from 'is-number'
 import isDate from 'is-date-like'
 
+// these types should match human-schema, but be more lax
+// and permissive for inputs, and not validate too deep
 export const number = {
   name: 'Number',
   check: (v) => isNumber(v)

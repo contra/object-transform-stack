@@ -11,6 +11,8 @@ var _isDateLike = _interopRequireDefault(require("is-date-like"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// these types should match human-schema, but be more lax
+// and permissive for inputs, and not validate too deep
 const number = {
   name: 'Number',
   check: v => (0, _isNumber.default)(v)

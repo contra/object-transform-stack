@@ -60,30 +60,39 @@ const paths = (inp, {
 
 exports.paths = paths;
 
+function _ref2(prev, src) {
+  return (0, _lodash.union)(prev, src);
+}
+
+function _ref3([path, types]) {
+  return {
+    path,
+    types: (0, _lodash.sortBy)(types)
+  };
+}
+
 const analyze = (inp, {
   types = typeDefs,
   depthLimit,
   arrayLimit
 } = {}) => {
+  function _ref(prev, [path, v]) {
+    prev[path] = (0, _getTypes.default)(v, types);
+    return prev;
+  }
+
   const getPathsAndTypes = i => {
     const paths = getPaths(i, {
       types,
       depthLimit,
       arrayLimit
     });
-    return Object.entries(paths).reduce((prev, [path, v]) => {
-      prev[path] = (0, _getTypes.default)(v, types);
-      return prev;
-    }, {});
+    return Object.entries(paths).reduce(_ref, {});
   };
 
-  const merger = (prev, src) => (0, _lodash.union)(prev, src);
-
+  const merger = _ref2;
   const all = (0, _lodash.mergeWith)(...inp.map(getPathsAndTypes), merger);
-  return Object.entries(all).map(([path, types]) => ({
-    path,
-    types: (0, _lodash.sortBy)(types)
-  }));
+  return Object.entries(all).map(_ref3);
 };
 
 exports.analyze = analyze;
